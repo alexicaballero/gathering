@@ -1,0 +1,18 @@
+<svg width="864" height="864" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo -->
+  <rect width="64" height="64" rx="12" fill="#E6F2FA"/>
+  
+  <!-- Forma de vórtice/fuente invertida -->
+  <path d="M32 12
+           C44 16, 52 28, 32 40
+           C12 28, 20 16, 32 12Z"
+        fill="#4A90E2" stroke="#1E1E1E" stroke-width="2"/>
+  
+  <!-- Líneas de flujo hacia afuera -->
+  <path d="M32 20 C36 24, 40 28, 44 32" stroke="#4A90E2" stroke-width="2" fill="none"/>
+  <path d="M32 20 C28 24, 24 28, 20 32" stroke="#4A90E2" stroke-width="2" fill="none"/>
+  
+  <!-- Gotas de conocimiento compartido -->
+  <circle cx="20" cy="36" r="3" fill="#4A90E2"/>
+  <circle cx="44" cy="36" r="3" fill="#4A90E2"/>
+</svg>

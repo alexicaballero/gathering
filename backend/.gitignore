@@ -1,0 +1,59 @@
+# Build folders
+bin/
+obj/
+.vs/
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+*.sh
+.DS_Store
+
+# Test Results
+TestResults/
+
+# NuGet
+.nuget/
+*.nupkg
+*.snupkg
+
+# Local Environment Variables
+appsettings.Development.json
+.env
+.env.local
+.env.*.local
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+
+# Entity Framework
+Migrations/*.Designer.cs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE Misc
+*.DotSettings.user
+.idea/
+.vscode/settings.json

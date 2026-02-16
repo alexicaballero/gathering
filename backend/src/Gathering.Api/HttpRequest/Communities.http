@@ -1,0 +1,78 @@
+@baseUrl = http://localhost:5236/api/v1
+
+### Get All Communities
+GET {{baseUrl}}/Communities
+Accept: application/json
+
+### Get Community by Id
+GET {{baseUrl}}/Communities/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+### Create Community without Image
+POST {{baseUrl}}/communities
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="name"
+
+New Community
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+This is a test community description
+------FormBoundary--
+
+### Create Community with Image (using multipart/form-data)
+POST {{baseUrl}}/communities
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="name"
+
+Community with Image
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Community with uploaded image
+------FormBoundary
+Content-Disposition: form-data; name="image"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./sample.jpg
+------FormBoundary--
+
+### Update Community without Image
+PUT {{baseUrl}}/communities/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="name"
+
+Updated Community Name
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Community Description
+------FormBoundary--
+
+### Update Community with new Image
+PUT {{baseUrl}}/communities/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="name"
+
+Updated Community Name
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Community Description
+------FormBoundary
+Content-Disposition: form-data; name="image"; filename="new-image.jpg"
+Content-Type: image/jpeg
+
+< ./sample.jpg
+------FormBoundary--
+
+### Delete Community
+DELETE {{baseUrl}}/communities/00000000-0000-0000-0000-000000000001

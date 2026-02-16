@@ -1,0 +1,179 @@
+@baseUrl = http://localhost:5236/api/v1
+
+### Get Sessions by Community
+GET {{baseUrl}}/sessions/community/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+### Create Session without Image
+POST {{baseUrl}}/sessions
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="communityId"
+
+00000000-0000-0000-0000-000000000001
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Session Title
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Session Description
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T10:00:00
+------FormBoundary--
+
+### Create Session with Image
+POST {{baseUrl}}/sessions
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="communityId"
+
+00000000-0000-0000-0000-000000000001
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Session with Image
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Session with uploaded image
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T10:00:00
+------FormBoundary
+Content-Disposition: form-data; name="image"; filename="sample.jpg"
+Content-Type: image/jpeg
+
+< ./sample.jpg
+------FormBoundary--
+
+### Update Session without Image
+PUT {{baseUrl}}/sessions/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Updated Session Title
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Session Description
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Updated Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T14:00:00
+------FormBoundary
+Content-Disposition: form-data; name="state"
+
+0
+------FormBoundary--
+
+# Session States:
+# 0 = Scheduled
+# 1 = Completed
+# 2 = Canceled
+
+### Update Session with new Image
+PUT {{baseUrl}}/sessions/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Updated Session Title
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Session Description
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Updated Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T14:00:00
+------FormBoundary
+Content-Disposition: form-data; name="state"
+
+0
+------FormBoundary
+Content-Disposition: form-data; name="image"; filename="new-image.jpg"
+Content-Type: image/jpeg
+
+< ./sample.jpg
+------FormBoundary--
+
+### Update Session to Completed
+PUT {{baseUrl}}/sessions/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Updated Session Title
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Session Description
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Updated Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T14:00:00
+------FormBoundary
+Content-Disposition: form-data; name="state"
+
+1
+------FormBoundary--
+
+### Update Session to Canceled
+PUT {{baseUrl}}/sessions/00000000-0000-0000-0000-000000000001
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="title"
+
+Updated Session Title
+------FormBoundary
+Content-Disposition: form-data; name="description"
+
+Updated Session Description
+------FormBoundary
+Content-Disposition: form-data; name="speaker"
+
+Updated Speaker Name
+------FormBoundary
+Content-Disposition: form-data; name="schedule"
+
+2026-03-15T14:00:00
+------FormBoundary
+Content-Disposition: form-data; name="state"
+
+2
+------FormBoundary--
+
+### Delete Session
+DELETE {{baseUrl}}/sessions/00000000-0000-0000-0000-000000000001

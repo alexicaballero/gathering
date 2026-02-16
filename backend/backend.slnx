@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../../../Users/ingal/Downloads/clean-architecture (3)/.editorconfig" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Gathering.Infrastructure/Gathering.Infrastructure.csproj" />
+    <Project Path="src/Gathering.Api/Gathering.Api.csproj" />
+    <Project Path="src/Gathering.Application/Gathering.Application.csproj" />
+    <Project Path="src/Gathering.Domain/Gathering.Domain.csproj" />
+    <Project Path="src/Gathering.SharedKernel/Gathering.SharedKernel.csproj" />
+  </Folder>
+</Solution>

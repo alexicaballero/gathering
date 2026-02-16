@@ -1,0 +1,8 @@
+﻿using Gathering.SharedKernel;
+
+namespace Gathering.Infrastructure.Time;
+
+internal sealed class DateTimeProvider : IDateTimeProvider
+{
+    public DateTime UtcNow => DateTime.UtcNow;
+}
