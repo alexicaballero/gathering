@@ -1,7 +1,10 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Update;
 using Gathering.Domain.Sessions;
 using Microsoft.AspNetCore.Mvc;
+using Gathering.Infrastructure;
+using Gathering.SharedKernel;
 
 namespace Gathering.Api.Endpoints.Sessions;
 
@@ -15,7 +18,8 @@ public class Update : IEndpoint
       .Produces(StatusCodes.Status204NoContent)
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status404NotFound)
-      .WithName("UpdateSession");
+      .WithName("UpdateSession")
+      .DisableAntiforgery(); // Disable CSRF protection for API endpoints
   }
 
   private static async Task<IResult> Handler(
@@ -51,18 +55,13 @@ public class Update : IEndpoint
       imageFileName,
       imageContentType);
 
-    var result = await sender.Send(updateSessionCommand, cancellationToken);
+    Result<Guid> result = await sender.Send(updateSessionCommand, cancellationToken);
 
     if (imageStream is not null)
     {
       await imageStream.DisposeAsync();
     }
 
-    if (result.IsFailure)
-    {
-      return Results.BadRequest(new { error = result.Error.Description });
-    }
-
-    return Results.NoContent();
+    return result.Match(Results.Ok, CustomResults.Problem);
   }
 }

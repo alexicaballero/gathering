@@ -2,8 +2,10 @@
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Community } from '@/lib/types';
 import { postFormData, putFormData } from '@/lib/api-client';
 
@@ -21,6 +23,7 @@ export default function CommunityForm({
   }
 
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(initialData?.name ?? '');
   const [description, setDescription] = useState(
     initialData?.description ?? '',
@@ -57,6 +60,26 @@ export default function CommunityForm({
     }
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const file = event.dataTransfer.files?.[0];
+    if (file?.type.startsWith('image/')) {
+      setImageFile(file);
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+      const url = URL.createObjectURL(file);
+      objectUrlRef.current = url;
+      setPreview(url);
+    }
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
@@ -80,17 +103,18 @@ export default function CommunityForm({
         mode === 'create'
           ? '/api/v1/communities'
           : `/api/v1/communities/${initialData?.id}`;
-      const response =
-        mode === 'create'
-          ? await postFormData<Community>(endpoint, payload)
-          : await putFormData<Community>(endpoint, payload);
 
-      router.push(`/communities/${response.id}`);
+      await (mode === 'create'
+        ? postFormData<Community>(endpoint, payload)
+        : putFormData<Community>(endpoint, payload));
+
+      setIsSaving(false);
+      router.push(`/`);
+      router.refresh();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Unable to save community.';
       setErrorMessage(message);
-    } finally {
       setIsSaving(false);
     }
   };
@@ -144,36 +168,63 @@ export default function CommunityForm({
       </div>
 
       <div className='space-y-3'>
-        <div className='flex items-center justify-between'>
-          <div>
-            <p className='text-sm font-medium text-foreground'>Cover image</p>
-            <p className='text-sm text-muted-foreground'>
-              Upload a file and the backend will store it for you.
-            </p>
-          </div>
-          <input
-            id='community-image'
-            type='file'
-            accept='image/*'
-            className='text-sm text-muted-foreground'
-            onChange={handleImageChange}
-          />
+        <div>
+          <p className='text-sm font-medium text-foreground'>Cover image</p>
+          <p className='text-sm text-muted-foreground'>
+            Upload a file and the backend will store it for you.
+          </p>
         </div>
 
-        <div className='h-56 w-full overflow-hidden rounded-2xl border border-border bg-muted'>
-          {preview ? (
-            <div
-              className='h-full w-full bg-cover bg-center'
-              style={{
-                backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.6)), url(${preview})`,
-              }}
-            />
-          ) : (
-            <div className='flex h-full items-center justify-center text-sm font-medium text-muted-foreground'>
-              Preview will appear here
-            </div>
-          )}
-        </div>
+        <input
+          ref={fileInputRef}
+          id='community-image'
+          type='file'
+          accept='image/*'
+          className='hidden'
+          onChange={handleImageChange}
+        />
+
+        <Card
+          className='relative border-2 border-dashed border-border hover:border-primary hover:bg-accent/50 transition-all cursor-pointer'
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className='p-8'>
+            {preview ? (
+              <div className='space-y-4'>
+                <div
+                  className='h-40 w-full rounded-lg overflow-hidden bg-cover bg-center'
+                  style={{
+                    backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.6)), url(${preview})`,
+                  }}
+                />
+                <div className='text-center'>
+                  <p className='text-sm font-medium text-foreground'>
+                    ✓ {imageFile?.name}
+                  </p>
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    Click or drag to change image
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='flex flex-col items-center justify-center gap-3 py-4'>
+                <div className='rounded-full bg-primary/10 p-3'>
+                  <Upload className='w-6 h-6 text-primary' />
+                </div>
+                <div className='text-center'>
+                  <p className='text-sm font-medium text-foreground'>
+                    Drag and drop your image
+                  </p>
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    or click to browse
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
       </div>
 
       {errorMessage && (

@@ -1,3 +1,4 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.GetById;
 
@@ -13,12 +14,7 @@ public class GetById : IEndpoint
 
             var sessionResult = await sender.Send(sessionQuery, cancellationToken);
 
-            if (sessionResult.IsFailure)
-            {
-                return Results.NotFound(sessionResult.Error);
-            }
-
-            return Results.Ok(sessionResult.Value);
+            return sessionResult.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(ApiTags.Session);
     }

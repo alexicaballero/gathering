@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Common.Validators;
 using Gathering.Domain.Abstractions;
@@ -7,7 +7,7 @@ using Gathering.SharedKernel;
 
 namespace Gathering.Application.Communities.Create;
 
-public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommunityCommand>
+public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommunityCommand, Guid>
 {
     private readonly ICommunityRepository _communityRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,13 +26,13 @@ public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommun
         _imageStorageService = imageStorageService;
     }
 
-    public async Task<Result> HandleAsync(CreateCommunityCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> HandleAsync(CreateCommunityCommand command, CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            return Result.Failure(Error.Validation("CreateCommunity.ValidationFailed", errorMessages));
+            return Result.Failure<Guid>(Error.Validation("CreateCommunity.ValidationFailed", errorMessages));
         }
 
         // Handle image upload if provided
@@ -47,7 +47,7 @@ public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommun
 
             if (fileValidationResult.IsFailure)
             {
-                return Result.Failure(fileValidationResult.Error);
+                return Result.Failure<Guid>(fileValidationResult.Error);
             }
 
             // Upload image to Azure Blob Storage
@@ -60,7 +60,7 @@ public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommun
 
             if (uploadResult.IsFailure)
             {
-                return Result.Failure(uploadResult.Error);
+                return Result.Failure<Guid>(uploadResult.Error);
             }
 
             imageUrl = uploadResult.Value;
@@ -76,12 +76,12 @@ public sealed class CreateCommunityCommandHandler : ICommandHandler<CreateCommun
             {
                 await _imageStorageService.DeleteImageAsync(imageUrl, cancellationToken);
             }
-            return Result.Failure(result.Error);
+            return Result.Failure<Guid>(result.Error);
         }
 
         _communityRepository.Add(result.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return Result.Success(result.Value.Id);
     }
 }

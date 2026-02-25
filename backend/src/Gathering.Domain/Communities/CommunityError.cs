@@ -17,4 +17,10 @@ public static class CommunityError
     public static readonly Error ImageUploadFailed = Error.Problem("Community.Image.UploadFailed", "Failed to upload community image to storage");
 
     public static readonly Error ImageDeleteFailed = Error.Problem("Community.Image.DeleteFailed", "Failed to delete community image from storage");
+
+    public static readonly Error SessionNotBelongsToCommunity = Error.Validation("Community.Session.NotBelongsToCommunity", "The session does not belong to this community");
+
+    public static readonly Error SessionAlreadyExists = Error.Validation("Community.Session.AlreadyExists", "The session is already part of this community");
+
+    public static readonly Error SessionNotFound = Error.NotFound("Community.Session.NotFound", "The specified session was not found in this community");
 }

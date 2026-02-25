@@ -7,4 +7,4 @@ public sealed record UpdateSessionResourceCommand(
     Guid ResourceId,
     string? Url,
     string? Notes,
-    string? Title = null) : ICommand;
+    string? Title = null) : ICommand<Guid>;

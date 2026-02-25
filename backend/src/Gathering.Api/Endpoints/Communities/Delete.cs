@@ -1,5 +1,7 @@
-﻿using Gathering.Application.Abstractions;
+﻿using Gathering.Api.Extensions;
+using Gathering.Application.Abstractions;
 using Gathering.Application.Communities.Delete;
+using Gathering.SharedKernel;
 
 namespace Gathering.Api.Endpoints.Communities;
 
@@ -11,9 +13,9 @@ public sealed class Delete : IEndpoint
         {
             var deleteCommand = new DeleteCommunityCommand(id);
 
-            await sender.Send(deleteCommand, cancellationToken);
+            Result result = await sender.Send(deleteCommand, cancellationToken);
 
-            return Results.Ok();
+            return result.Match(Results.NoContent, CustomResults.Problem);
 
         }).WithTags(ApiTags.Community);
     }

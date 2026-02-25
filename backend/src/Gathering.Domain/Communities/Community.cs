@@ -84,4 +84,48 @@ public class Community : AuditableEntity
 
         return Result.Success();
     }
+
+    /// <summary>
+    /// Adds a session to the community.
+    /// Validates that the session belongs to this community and is not already in the list.
+    /// </summary>
+    /// <param name="session">The session to add</param>
+    /// <returns>A result indicating success or failure</returns>
+    public Result AddSession(Session session)
+    {
+        // Validate that the session belongs to this community
+        if (session.CommunityId != Id)
+        {
+            return Result.Failure(CommunityError.SessionNotBelongsToCommunity);
+        }
+
+        // Validate that the session is not already in the list
+        if (Sessions.Any(s => s.Id == session.Id))
+        {
+            return Result.Failure(CommunityError.SessionAlreadyExists);
+        }
+
+        Sessions.Add(session);
+
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Removes a session from the community.
+    /// </summary>
+    /// <param name="sessionId">The ID of the session to remove</param>
+    /// <returns>A result indicating success or failure</returns>
+    public Result RemoveSession(Guid sessionId)
+    {
+        var session = Sessions.FirstOrDefault(s => s.Id == sessionId);
+
+        if (session is null)
+        {
+            return Result.Failure(CommunityError.SessionNotFound);
+        }
+
+        Sessions.Remove(session);
+
+        return Result.Success();
+    }
 }

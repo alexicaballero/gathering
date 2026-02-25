@@ -24,4 +24,4 @@ public sealed record UpdateSessionCommand(
     SessionState State,
     Stream? ImageStream = null,
     string? ImageFileName = null,
-    string? ImageContentType = null) : ICommand;
+    string? ImageContentType = null) : ICommand<Guid>;

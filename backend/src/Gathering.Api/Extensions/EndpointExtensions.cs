@@ -1,4 +1,4 @@
-﻿using Gathering.Api.Endpoints;
+using Gathering.Api.Endpoints;
 using System.Reflection;
 
 namespace Gathering.Api.Extensions;
@@ -17,12 +17,12 @@ public static class EndpointExtensions
 
         return services;
 
-        //services.AddTransient<IEndpoint, Endpoints.Communities.Create>();
-        //services.AddTransient<IEndpoint, Endpoints.Communities.GetAll>();
-        //services.AddTransient<IEndpoint, Endpoints.Sessions.Create>();
-        //services.AddTransient<IEndpoint, Endpoints.Sessions.GetByCommunity>();
+        // services.AddTransient<IEndpoint, Endpoints.Communities.Create>();
+        // services.AddTransient<IEndpoint, Endpoints.Communities.GetAll>();
+        // services.AddTransient<IEndpoint, Endpoints.Sessions.Create>();
+        // services.AddTransient<IEndpoint, Endpoints.Sessions.GetByCommunity>();
 
-        return services;
+        // return services;
     }
 
     public static IApplicationBuilder MapEndpoints(

@@ -31,12 +31,6 @@ public class Result
 
     public static Result<TValue> Failure<TValue>(Error error) =>
         new(default, false, error);
-
-    /// <summary>
-    /// Executes one of two functions based on the result state
-    /// </summary>
-    public TResult Match<TResult>(Func<TResult> onSuccess, Func<Error, TResult> onFailure) =>
-        IsSuccess ? onSuccess() : onFailure(Error);
 }
 
 public class Result<TValue> : Result
@@ -59,34 +53,4 @@ public class Result<TValue> : Result
 
     public static Result<TValue> ValidationFailure(Error error) =>
         new(default, false, error);
-
-    /// <summary>
-    /// Executes one of two functions based on the result state
-    /// </summary>
-    public TResult Match<TResult>(Func<TValue, TResult> onSuccess, Func<Error, TResult> onFailure) =>
-        IsSuccess ? onSuccess(Value) : onFailure(Error);
-
-    /// <summary>
-    /// Transforms the value of a successful result
-    /// </summary>
-    public Result<TNewValue> Map<TNewValue>(Func<TValue, TNewValue> transform) =>
-        IsSuccess ? Success(transform(Value)) : Failure<TNewValue>(Error);
-
-    /// <summary>
-    /// Transforms the error of a failed result
-    /// </summary>
-    public Result<TValue> MapError(Func<Error, Error> transform) =>
-        IsFailure ? Failure<TValue>(transform(Error)) : this;
-
-    /// <summary>
-    /// Chains another result-returning operation if this result is successful
-    /// </summary>
-    public Result<TNewValue> Then<TNewValue>(Func<TValue, Result<TNewValue>> next) =>
-        IsSuccess ? next(Value) : Failure<TNewValue>(Error);
-
-    /// <summary>
-    /// Chains another result-returning operation if this result is successful
-    /// </summary>
-    public Result Then(Func<TValue, Result> next) =>
-        IsSuccess ? next(Value) : Failure(Error);
 }

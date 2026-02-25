@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Gathering.Api.Middleware;
 using System.Text.Json.Serialization;
 
 namespace Gathering.Api;
@@ -7,6 +8,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentationServices(this IServiceCollection services, int apiVersion)
     {
+        services.AddProblemDetails();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+
         services.AddApiVersioning(options =>
         {
             options.AssumeDefaultVersionWhenUnspecified = true;

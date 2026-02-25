@@ -36,7 +36,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
   return (
     <div className='mx-auto min-h-screen max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:space-y-12 lg:px-8'>
       <SessionDetailHeader session={session} />
-      <SessionResourceList resources={resources} />
+      <SessionResourceList resources={resources} sessionId={id} />
     </div>
   );
 }

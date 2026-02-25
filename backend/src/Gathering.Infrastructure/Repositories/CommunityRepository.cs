@@ -59,13 +59,17 @@ internal sealed class CommunityRepository : ICommunityRepository
 
     public async Task<IReadOnlyList<Community>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var communities = await _dbContext.Communities.ToListAsync(cancellationToken);
+        var communities = await _dbContext.Communities
+            .Include(c => c.Sessions)
+            .ToListAsync(cancellationToken);
         return communities.AsReadOnly();
     }
 
     public async Task<Community?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Communities.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+        return await _dbContext.Communities
+            .Include(c => c.Sessions)
+            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 
     public void Remove(Community entity)

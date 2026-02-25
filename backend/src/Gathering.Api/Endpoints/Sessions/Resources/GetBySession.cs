@@ -1,3 +1,4 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Resources.GetBySession;
 
@@ -13,12 +14,7 @@ public sealed class GetBySession : IEndpoint
 
       var result = await sender.Send(query, cancellationToken);
 
-      if (result.IsFailure)
-      {
-        return Results.BadRequest(result.Error);
-      }
-
-      return Results.Ok(result.Value);
+      return result.Match(Results.Ok, CustomResults.Problem);
     })
     .WithTags(ApiTags.SessionResource);
   }

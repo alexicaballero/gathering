@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { Community } from '../types';
 import * as api from '../api-client';
 
@@ -55,5 +56,9 @@ export async function updateCommunity(
  * Delete a community
  */
 export async function deleteCommunity(id: string): Promise<void> {
-  return api.del<void>(`/api/v1/communities/${id}`);
+  await api.del<void>(`/api/v1/communities/${id}`);
+
+  // Revalidate all paths that might show communities
+  revalidatePath('/');
+  revalidatePath('/communities');
 }

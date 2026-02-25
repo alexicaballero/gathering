@@ -1,5 +1,7 @@
-﻿using Gathering.Application.Abstractions;
+using Gathering.Api.Extensions;
+using Gathering.Application.Abstractions;
 using Gathering.Application.Communities.Create;
+using Gathering.SharedKernel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gathering.Api.Endpoints.Communities;
@@ -13,7 +15,8 @@ public class Create : IEndpoint
             .Accepts<IFormCollection>("multipart/form-data")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithName("CreateCommunity");
+            .WithName("CreateCommunity")
+            .DisableAntiforgery();
     }
 
     private static async Task<IResult> Handler(
@@ -37,14 +40,13 @@ public class Create : IEndpoint
         var command = new CreateCommunityCommand(name, description, imageStream, imageFileName, imageContentType);
 
         var result = await sender.Send(command, cancellationToken);
+        // Result<Guid> result = await sender.Send(command, cancellationToken);
 
         if (imageStream is not null)
         {
             await imageStream.DisposeAsync();
         }
 
-        return result.IsSuccess
-            ? Results.Ok()
-            : Results.BadRequest(new { error = result.Error.Description });
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 }

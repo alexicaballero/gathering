@@ -21,4 +21,4 @@ public sealed record CreateSessionCommand(
     DateTime Schedule,
     Stream? ImageStream = null,
     string? ImageFileName = null,
-    string? ImageContentType = null) : ICommand;
+    string? ImageContentType = null) : ICommand<Guid>;

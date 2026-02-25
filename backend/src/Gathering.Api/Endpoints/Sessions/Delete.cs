@@ -1,6 +1,8 @@
 ﻿using Gathering.Api.Endpoints;
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Delete;
+using Gathering.SharedKernel;
 
 
 public sealed class Delete : IEndpoint
@@ -11,9 +13,9 @@ public sealed class Delete : IEndpoint
         {
             var deleteCommand = new DeleteSessionCommand(id);
 
-            await sender.Send(deleteCommand, cancellationToken);
+            Result result = await sender.Send(deleteCommand, cancellationToken);
 
-            return Results.Ok();
+            return result.Match(Results.NoContent, CustomResults.Problem);
 
         }).WithTags(ApiTags.Session);
     }

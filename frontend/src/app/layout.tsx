@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'CoP Hub - Comunidades de Practica',
+  title: 'Gathering - Comunidades de Practica',
   description:
     'Administra y explora sesiones de comunidades de practica en Frontend, Python y Cloud.',
 };

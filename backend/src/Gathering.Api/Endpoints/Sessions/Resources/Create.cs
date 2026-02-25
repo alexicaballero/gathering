@@ -1,3 +1,4 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Resources.Create;
 using Gathering.Domain.Sessions;
@@ -21,12 +22,7 @@ public sealed class Create : IEndpoint
 
       var result = await sender.Send(command, cancellationToken);
 
-      if (result.IsFailure)
-      {
-        return Results.BadRequest(result.Error);
-      }
-
-      return Results.Ok(new { Id = result.Value });
+      return result.Match(id => Results.Ok(new { Id = id }), CustomResults.Problem);
     })
     .WithTags(ApiTags.SessionResource);
   }

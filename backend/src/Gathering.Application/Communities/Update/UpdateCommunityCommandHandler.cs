@@ -7,7 +7,7 @@ using Gathering.SharedKernel;
 
 namespace Gathering.Application.Communities.Update;
 
-public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommunityCommand>
+public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommunityCommand, Guid>
 {
     private readonly ICommunityRepository _communityRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,20 +26,20 @@ public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommun
         _imageStorageService = imageStorageService;
     }
 
-    public async Task<Result> HandleAsync(UpdateCommunityCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> HandleAsync(UpdateCommunityCommand command, CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            return Result.Failure(Error.Validation("UpdateCommunity.ValidationFailed", errorMessages));
+            return Result.Failure<Guid>(Error.Validation("UpdateCommunity.ValidationFailed", errorMessages));
         }
 
         var community = await _communityRepository.GetByIdAsync(command.CommunityId);
 
         if (community is null)
         {
-            return Result.Failure(CommunityError.NotFound);
+            return Result.Failure<Guid>(CommunityError.NotFound);
         }
 
         // Handle image upload if a new image is provided
@@ -54,7 +54,7 @@ public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommun
 
             if (fileValidationResult.IsFailure)
             {
-                return Result.Failure(fileValidationResult.Error);
+                return Result.Failure<Guid>(fileValidationResult.Error);
             }
 
             // Upload new image to Azure Blob Storage
@@ -67,7 +67,7 @@ public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommun
 
             if (uploadResult.IsFailure)
             {
-                return Result.Failure(uploadResult.Error);
+                return Result.Failure<Guid>(uploadResult.Error);
             }
 
             newImageUrl = uploadResult.Value;
@@ -86,11 +86,11 @@ public sealed class UpdateCommunityCommandHandler : ICommandHandler<UpdateCommun
 
         if (updateResult.IsFailure)
         {
-            return Result.Failure(updateResult.Error);
+            return Result.Failure<Guid>(updateResult.Error);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return Result.Success(community.Id);
     }
 }

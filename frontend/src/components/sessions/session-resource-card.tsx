@@ -7,22 +7,22 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { FileText, Link as LinkIcon, Video } from 'lucide-react';
+import SessionResourceActions from './session-resource-actions';
 
 interface SessionResourceCardProps {
   resource: SessionResource;
+  sessionId: string;
 }
 
 function getYouTubeEmbedUrl(url: string): string | null {
   try {
     const urlObj = new URL(url);
 
-    // Handle youtu.be format
     if (urlObj.hostname === 'youtu.be') {
       const videoId = urlObj.pathname.slice(1);
       return `https://www.youtube.com/embed/${videoId}`;
     }
 
-    // Handle youtube.com format
     if (urlObj.hostname.includes('youtube.com')) {
       const videoId = urlObj.searchParams.get('v');
       if (videoId) {
@@ -76,6 +76,7 @@ function ResourceTypeLabel({ type }: { type: SessionResourceType }) {
 
 export default function SessionResourceCard({
   resource,
+  sessionId,
 }: SessionResourceCardProps) {
   const embedUrl =
     resource.type === SessionResourceType.Video && resource.url
@@ -98,9 +99,12 @@ export default function SessionResourceCard({
       )}
 
       <CardHeader className='gap-2'>
-        <div className='flex items-center gap-2'>
-          <ResourceIcon type={resource.type} />
-          <ResourceTypeLabel type={resource.type} />
+        <div className='flex items-center justify-between gap-2'>
+          <div className='flex items-center gap-2'>
+            <ResourceIcon type={resource.type} />
+            <ResourceTypeLabel type={resource.type} />
+          </div>
+          <SessionResourceActions sessionId={sessionId} resource={resource} />
         </div>
         {resource.title && (
           <CardTitle className='text-lg'>{resource.title}</CardTitle>

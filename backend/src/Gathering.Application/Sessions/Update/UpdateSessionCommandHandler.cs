@@ -7,7 +7,7 @@ using Gathering.SharedKernel;
 
 namespace Gathering.Application.Sessions.Update;
 
-public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionCommand>
+public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionCommand, Guid>
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,20 +26,20 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
         _imageStorageService = imageStorageService;
     }
 
-    public async Task<Result> HandleAsync(UpdateSessionCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> HandleAsync(UpdateSessionCommand command, CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            return Result.Failure(Error.Validation("UpdateSession.ValidationFailed", errorMessages));
+            return Result.Failure<Guid>(Error.Validation("UpdateSession.ValidationFailed", errorMessages));
         }
 
         var session = await _sessionRepository.GetByIdAsync(command.SessionId);
 
         if (session is null)
         {
-            return Result.Failure(SessionError.NotFound);
+            return Result.Failure<Guid>(SessionError.NotFound);
         }
 
         // Handle image upload if a new image is provided
@@ -54,7 +54,7 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
 
             if (fileValidationResult.IsFailure)
             {
-                return Result.Failure(fileValidationResult.Error);
+                return Result.Failure<Guid>(fileValidationResult.Error);
             }
 
             // Upload new image to Azure Blob Storage
@@ -67,7 +67,7 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
 
             if (uploadResult.IsFailure)
             {
-                return Result.Failure(uploadResult.Error);
+                return Result.Failure<Guid>(uploadResult.Error);
             }
 
             newImageUrl = uploadResult.Value;
@@ -88,13 +88,13 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
 
         if (updateResult.IsFailure)
         {
-            return Result.Failure(updateResult.Error);
+            return Result.Failure<Guid>(updateResult.Error);
         }
 
         session.UpdateState(command.State);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return Result.Success(session.Id);
     }
 }

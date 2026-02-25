@@ -7,7 +7,7 @@ public class GetById : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/Communities/{id:guid}", async (Guid Id, ISender sender, CancellationToken cancellationToken = default) =>
+        app.MapGet("/communities/{id:guid}", async (Guid Id, ISender sender, CancellationToken cancellationToken = default) =>
         {
             var communityByIdQuery = new GetCommunityByIdQuery(Id);
 

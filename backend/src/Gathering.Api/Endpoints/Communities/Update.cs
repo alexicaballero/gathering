@@ -1,5 +1,7 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Communities.Update;
+using Gathering.SharedKernel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gathering.Api.Endpoints.Communities;
@@ -14,7 +16,8 @@ public class Update : IEndpoint
       .Produces(StatusCodes.Status204NoContent)
       .Produces(StatusCodes.Status400BadRequest)
       .Produces(StatusCodes.Status404NotFound)
-      .WithName("UpdateCommunity");
+      .WithName("UpdateCommunity")
+      .DisableAntiforgery(); // Disable CSRF protection for API endpoints
   }
 
   private static async Task<IResult> Handler(
@@ -44,18 +47,13 @@ public class Update : IEndpoint
       imageFileName,
       imageContentType);
 
-    var result = await sender.Send(updateCommunityCommand, cancellationToken);
+    Result<Guid> result = await sender.Send(updateCommunityCommand, cancellationToken);
 
     if (imageStream is not null)
     {
       await imageStream.DisposeAsync();
     }
 
-    if (result.IsFailure)
-    {
-      return Results.BadRequest(new { error = result.Error.Description });
-    }
-
-    return Results.NoContent();
+    return result.Match(Results.Ok, CustomResults.Problem);
   }
 }

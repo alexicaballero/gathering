@@ -1,5 +1,7 @@
-﻿using Gathering.Application.Abstractions;
+using Gathering.Api.Extensions;
+using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Create;
+using Gathering.SharedKernel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gathering.Api.Endpoints.Sessions;
@@ -13,7 +15,8 @@ public class Create : IEndpoint
             .Accepts<IFormCollection>("multipart/form-data")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithName("CreateSession");
+            .WithName("CreateSession")
+            .DisableAntiforgery(); // Disable CSRF protection for API endpoints
     }
 
     private static async Task<IResult> Handler(
@@ -47,15 +50,14 @@ public class Create : IEndpoint
             imageFileName,
             imageContentType);
 
-        var result = await sender.Send(command, cancellationToken);
+        Result<Guid> result = await sender.Send(command, cancellationToken);
 
         if (imageStream is not null)
         {
             await imageStream.DisposeAsync();
         }
 
-        return result.IsSuccess
-            ? Results.Ok()
-            : Results.BadRequest(new { error = result.Error.Description });
+        return result.Match(Results.Ok, CustomResults.Problem);
     }
 }
+

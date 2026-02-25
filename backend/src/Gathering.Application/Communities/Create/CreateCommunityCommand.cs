@@ -15,4 +15,4 @@ public record CreateCommunityCommand(
     string Description,
     Stream? ImageStream = null,
     string? ImageFileName = null,
-    string? ImageContentType = null) : ICommand;
+    string? ImageContentType = null) : ICommand<Guid>;

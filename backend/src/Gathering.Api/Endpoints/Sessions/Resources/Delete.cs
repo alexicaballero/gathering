@@ -1,3 +1,4 @@
+using Gathering.Api.Extensions;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Resources.Delete;
 
@@ -17,12 +18,7 @@ public sealed class Delete : IEndpoint
 
       var result = await sender.Send(command, cancellationToken);
 
-      if (result.IsFailure)
-      {
-        return Results.BadRequest(result.Error);
-      }
-
-      return Results.NoContent();
+      return result.Match(Results.NoContent, CustomResults.Problem);
     })
     .WithTags(ApiTags.SessionResource);
   }

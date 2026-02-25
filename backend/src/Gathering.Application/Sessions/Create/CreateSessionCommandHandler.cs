@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Common.Validators;
 using Gathering.Domain.Abstractions;
@@ -8,7 +8,7 @@ using Gathering.SharedKernel;
 
 namespace Gathering.Application.Sessions.Create;
 
-public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionCommand>
+public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionCommand, Guid>
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly ICommunityRepository _communityRepository;
@@ -30,20 +30,20 @@ public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionC
         _imageStorageService = imageStorageService;
     }
 
-    public async Task<Result> HandleAsync(CreateSessionCommand request, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> HandleAsync(CreateSessionCommand request, CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            return Result.Failure(Error.Validation("CreateSession.ValidationFailed", errorMessages));
+            return Result.Failure<Guid>(Error.Validation("CreateSession.ValidationFailed", errorMessages));
         }
 
         var communityExists = await _communityRepository.ExistsAsync(request.CommunityId, cancellationToken);
 
         if (!communityExists)
         {
-            return Result.Failure(CommunityError.NotFound);
+            return Result.Failure<Guid>(CommunityError.NotFound);
         }
 
         // Handle image upload if provided
@@ -58,7 +58,7 @@ public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionC
 
             if (fileValidationResult.IsFailure)
             {
-                return Result.Failure(fileValidationResult.Error);
+                return Result.Failure<Guid>(fileValidationResult.Error);
             }
 
             // Upload image to Azure Blob Storage
@@ -71,7 +71,7 @@ public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionC
 
             if (uploadResult.IsFailure)
             {
-                return Result.Failure(uploadResult.Error);
+                return Result.Failure<Guid>(uploadResult.Error);
             }
 
             imageUrl = uploadResult.Value;
@@ -86,13 +86,13 @@ public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionC
             {
                 await _imageStorageService.DeleteImageAsync(imageUrl, cancellationToken);
             }
-            return Result.Failure(sessionResult.Error);
+            return Result.Failure<Guid>(sessionResult.Error);
         }
 
         _sessionRepository.Add(sessionResult.Value);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return Result.Success(sessionResult.Value.Id);
     }
 }

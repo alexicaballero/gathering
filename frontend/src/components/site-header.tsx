@@ -2,10 +2,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from './ui/button';
 import { getCommunities } from '@/lib/actions/community-actions';
-import { Home } from 'lucide-react';
+import { Home, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 export default async function SiteHeader() {
   const communities = await getCommunities();
+  const showDropdown = communities.length > 3;
 
   return (
     <header className='sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md'>
@@ -36,17 +43,45 @@ export default async function SiteHeader() {
               <Home /> Home
             </Button>
           </Link>
-          {communities.map((c) => (
-            <Link key={c.id} href={`/communities/${c.id}`}>
-              <Button
-                variant='ghost'
-                size='sm'
-                className='text-muted-foreground hover:text-foreground'
-              >
-                {c.name}
-              </Button>
-            </Link>
-          ))}
+
+          {showDropdown ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='text-muted-foreground hover:text-foreground'
+                >
+                  Communities
+                  <ChevronDown className='w-4 h-4 ml-1' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='start' className='w-48'>
+                {communities.map((c) => (
+                  <DropdownMenuItem key={c.id} asChild>
+                    <Link
+                      href={`/communities/${c.id}`}
+                      className='cursor-pointer'
+                    >
+                      {c.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            communities.map((c) => (
+              <Link key={c.id} href={`/communities/${c.id}`}>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='text-muted-foreground hover:text-foreground'
+                >
+                  {c.name}
+                </Button>
+              </Link>
+            ))
+          )}
         </nav>
       </div>
     </header>

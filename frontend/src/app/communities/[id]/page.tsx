@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import SessionList from '@/components/sessions/session-list';
 import { Button } from '@/components/ui/button';
+import CommunityDeleteButton from '@/components/communities/community-delete-button';
 import { getCommunity } from '@/lib/actions/community-actions';
 import { getSessionsByCommunity } from '@/lib/actions/session-actions';
 import { Metadata } from 'next/dist/lib/metadata/types/metadata-interface';
 import { NotFoundMessage } from '@/components/not-found-message';
-import { Edit2 } from 'lucide-react';
+import { Edit2, Plus } from 'lucide-react';
 
 export function generateMetadata(): Metadata {
   return {
@@ -45,9 +46,19 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
       <div className='mt-6 flex flex-wrap gap-3'>
         <Button asChild variant='outline' size='sm'>
           <Link href={`/communities/${community.id}/edit`}>
-            <Edit2 /> Edit
+            <Edit2 className='h-4 w-4' /> Edit
           </Link>
         </Button>
+        <Button asChild size='sm'>
+          <Link href={`/sessions/new?communityId=${community.id}`}>
+            <Plus className='h-4 w-4' /> Add Session
+          </Link>
+        </Button>
+        <CommunityDeleteButton
+          communityId={community.id}
+          communityName={community.name}
+          size='sm'
+        />
       </div>
       <SessionList sessions={sessions} />
     </div>

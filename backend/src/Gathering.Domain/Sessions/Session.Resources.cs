@@ -33,7 +33,13 @@ public partial class Session
       return Result.Failure(SessionError.ResourceNotFound);
     }
 
-    return resource.Update(url, notes, title);
+    var updateResult = resource.Update(url, notes, title);
+    if (updateResult.IsFailure)
+    {
+      return Result.Failure<SessionResource>(updateResult.Error);
+    }
+
+    return updateResult;
   }
 
   public Result RemoveResource(Guid resourceId)

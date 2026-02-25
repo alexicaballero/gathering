@@ -1,4 +1,5 @@
 'use server';
+import { revalidatePath } from 'next/cache';
 import * as api from '../api-client';
 import { Session, SessionResource, SessionResourceType } from '@/lib/types';
 
@@ -34,6 +35,33 @@ export async function getSessionsByCommunityNoCache(
 }
 
 /**
+ * Create a new session using FormData (for file uploads)
+ */
+export async function createSessionWithFormData(
+  formData: FormData,
+): Promise<void> {
+  await api.postFormData<void>('/api/v1/sessions', formData);
+
+  // Revalidate all paths that might show sessions
+  revalidatePath('/communities');
+  revalidatePath('/sessions');
+}
+
+/**
+ * Update a session using FormData (for file uploads)
+ */
+export async function updateSessionWithFormData(
+  id: string,
+  formData: FormData,
+): Promise<void> {
+  await api.putFormData<void>(`/api/v1/sessions/${id}`, formData);
+
+  // Revalidate all paths that might show sessions
+  revalidatePath('/communities');
+  revalidatePath('/sessions');
+}
+
+/**
  * Create a new session
  */
 export async function createSession(
@@ -56,7 +84,11 @@ export async function updateSession(
  * Delete a session
  */
 export async function deleteSession(id: string): Promise<void> {
-  return api.del<void>(`/api/v1/sessions/${id}`);
+  await api.del<void>(`/api/v1/sessions/${id}`);
+
+  // Revalidate all paths that might show sessions
+  revalidatePath('/communities');
+  revalidatePath('/sessions');
 }
 
 /**
@@ -83,10 +115,12 @@ export async function createSessionResource(
     title?: string | null;
   },
 ): Promise<{ id: string }> {
-  return api.post<{ id: string }>(
+  const result = await api.post<{ id: string }>(
     `/api/v1/sessions/${sessionId}/resources`,
     data,
   );
+  revalidatePath(`/sessions/${sessionId}`);
+  return result;
 }
 
 /**
@@ -101,10 +135,11 @@ export async function updateSessionResource(
     title?: string | null;
   },
 ): Promise<void> {
-  return api.put<void>(
+  await api.put<void>(
     `/api/v1/sessions/${sessionId}/resources/${resourceId}`,
     data,
   );
+  revalidatePath(`/sessions/${sessionId}`);
 }
 
 /**
@@ -114,5 +149,6 @@ export async function deleteSessionResource(
   sessionId: string,
   resourceId: string,
 ): Promise<void> {
-  return api.del<void>(`/api/v1/sessions/${sessionId}/resources/${resourceId}`);
+  await api.del<void>(`/api/v1/sessions/${sessionId}/resources/${resourceId}`);
+  revalidatePath(`/sessions/${sessionId}`);
 }

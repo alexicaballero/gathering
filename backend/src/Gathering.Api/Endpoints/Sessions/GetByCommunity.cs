@@ -1,4 +1,5 @@
-﻿using Gathering.Application.Abstractions;
+﻿using Gathering.Api.Extensions;
+using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.GetByCommunity;
 
 namespace Gathering.Api.Endpoints.Sessions;
@@ -13,7 +14,7 @@ public class GetByCommunity : IEndpoint
 
             var sessionsResult = await sender.Send(sessionsByCommunityQuery, cancellationToken);
 
-            return Results.Ok(sessionsResult.Value);
+            return sessionsResult.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(ApiTags.Session);
     }

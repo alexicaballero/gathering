@@ -11,13 +11,38 @@ async function executeRequest<T>(url: string, config: RequestInit): Promise<T> {
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      // Try to get error message from response body
+      let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+
+      try {
+        const errorBody = await response.text();
+        if (errorBody) {
+          const errorData = JSON.parse(errorBody);
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        }
+      } catch {
+        // If parsing fails, use default message
+      }
+
+      throw new Error(errorMessage);
     }
 
-    return await response.json();
+    const text = await response.text();
+
+    if (!text || response.status === 204) {
+      return {} as T;
+    }
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      return {} as T;
+    }
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Failed to fetch from ${url}: ${error.message}`);
+      throw error; // Re-throw with original message
     }
     throw new Error(`Failed to fetch from ${url}`);
   }
