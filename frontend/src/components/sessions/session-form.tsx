@@ -150,173 +150,208 @@ export default function SessionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-6'>
+    <form
+      onSubmit={handleSubmit}
+      className='space-y-6 rounded-3xl border border-border bg-card/70 p-6 shadow-lg'
+    >
+      <div>
+        <p className='text-sm font-semibold uppercase tracking-[0.3em] text-muted-foreground/80'>
+          Session details
+        </p>
+        <h1 className='mt-2 text-3xl font-semibold text-foreground'>
+          {mode === 'create' ? 'Create a session' : 'Edit session'}
+        </h1>
+      </div>
+
       {errorMessage && (
-        <Card className='border-red-200 bg-red-50 p-4 text-red-800'>
+        <div className='rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive'>
           {errorMessage}
-        </Card>
+        </div>
       )}
 
       {/* Title */}
-      <Card className='p-6'>
-        <label className='block text-sm font-medium'>
-          Session Title *
-          <input
-            type='text'
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder='Enter session title'
-            required
-            maxLength={200}
-            className='mt-2 w-full rounded border px-3 py-2 placeholder-muted-foreground'
-          />
+      <div className='space-y-2'>
+        <label
+          className='text-sm font-medium text-foreground'
+          htmlFor='session-title'
+        >
+          Title
         </label>
-        <p className='mt-1 text-xs text-muted-foreground'>
+        <input
+          id='session-title'
+          type='text'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder='Enter session title'
+          required
+          maxLength={200}
+          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+        />
+        <p className='text-xs text-muted-foreground'>
           {title.length}/200 characters
         </p>
-      </Card>
+      </div>
 
       {/* Description */}
-      <Card className='p-6'>
-        <label className='block text-sm font-medium'>
-          Description *
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder='Enter session description'
-            required
-            maxLength={1000}
-            rows={4}
-            className='mt-2 w-full rounded border px-3 py-2 placeholder-muted-foreground'
-          />
+      <div className='space-y-2'>
+        <label
+          className='text-sm font-medium text-foreground'
+          htmlFor='session-description'
+        >
+          Description
         </label>
-        <p className='mt-1 text-xs text-muted-foreground'>
+        <textarea
+          id='session-description'
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder='Enter session description'
+          required
+          maxLength={1000}
+          rows={4}
+          className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+        />
+        <p className='text-xs text-muted-foreground'>
           {description.length}/1000 characters
         </p>
-      </Card>
+      </div>
 
       {/* Speaker */}
-      <Card className='p-6'>
-        <label className='block text-sm font-medium'>
-          Speaker Name *
-          <input
-            type='text'
-            value={speaker}
-            onChange={(e) => setSpeaker(e.target.value)}
-            placeholder='Enter speaker name'
-            required
-            className='mt-2 w-full rounded border px-3 py-2 placeholder-muted-foreground'
-          />
+      <div className='space-y-2'>
+        <label
+          className='text-sm font-medium text-foreground'
+          htmlFor='session-speaker'
+        >
+          Speaker Name
         </label>
-      </Card>
+        <input
+          id='session-speaker'
+          type='text'
+          value={speaker}
+          onChange={(e) => setSpeaker(e.target.value)}
+          placeholder='Enter speaker name'
+          required
+          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+        />
+      </div>
 
       {/* Schedule */}
-      <Card className='p-6'>
-        <label className='block text-sm font-medium'>
-          Schedule *
-          <input
-            type='datetime-local'
-            value={schedule}
-            onChange={(e) => setSchedule(e.target.value)}
-            required
-            className='mt-2 w-full rounded border px-3 py-2'
-          />
+      <div className='space-y-2'>
+        <label
+          className='text-sm font-medium text-foreground'
+          htmlFor='session-schedule'
+        >
+          Schedule
         </label>
-      </Card>
+        <input
+          id='session-schedule'
+          type='datetime-local'
+          value={schedule}
+          onChange={(e) => setSchedule(e.target.value)}
+          required
+          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+        />
+      </div>
 
       {/* State (Edit Only) */}
       {mode === 'edit' && (
-        <Card className='p-6'>
-          <label className='block text-sm font-medium'>
-            State
-            <select
-              value={state}
-              onChange={(e) => setState(Number(e.target.value) as SessionState)}
-              className='mt-2 w-full rounded border px-3 py-2'
-            >
-              <option value={SessionState.Scheduled}>Scheduled</option>
-              <option value={SessionState.Completed}>Completed</option>
-              <option value={SessionState.Canceled}>Canceled</option>
-            </select>
+        <div className='space-y-2'>
+          <label
+            className='text-sm font-medium text-foreground'
+            htmlFor='session-state'
+          >
+            Status
           </label>
-        </Card>
+          <select
+            id='session-state'
+            value={state}
+            onChange={(e) => setState(Number(e.target.value) as SessionState)}
+            className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+          >
+            <option value={SessionState.Scheduled}>Scheduled</option>
+            <option value={SessionState.Completed}>Completed</option>
+            <option value={SessionState.Canceled}>Canceled</option>
+          </select>
+        </div>
       )}
 
       {/* Image Upload */}
-      <Card className='p-6'>
-        <label className='block text-sm font-medium mb-4'>Session Image</label>
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          className='rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-muted-foreground/50'
-        >
-          {preview ? (
-            <div className='space-y-4'>
-              <Image
-                src={preview}
-                alt='Preview'
-                width={400}
-                height={256}
-                className='mx-auto max-h-64 rounded object-cover'
-              />
-              <button
-                type='button'
-                onClick={() => {
-                  setImageFile(null);
-                  setPreview(null);
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                  }
-                }}
-                className='text-sm text-blue-600 hover:underline'
-              >
-                Remove image
-              </button>
-            </div>
-          ) : (
-            <div className='space-y-2'>
-              <Upload className='mx-auto h-8 w-8 text-muted-foreground' />
-              <div>
-                <button
-                  type='button'
-                  onClick={() => fileInputRef.current?.click()}
-                  className='text-sm font-medium text-blue-600 hover:underline'
-                >
-                  Click to upload
-                </button>
-                <span className='text-sm text-muted-foreground'>
-                  {' '}
-                  or drag and drop
-                </span>
-              </div>
-              <p className='text-xs text-muted-foreground'>
-                PNG, JPG, GIF up to 10MB
-              </p>
-            </div>
-          )}
+      <div className='space-y-3'>
+        <div>
+          <p className='text-sm font-medium text-foreground'>Session image</p>
+          <p className='text-sm text-muted-foreground'>
+            Upload a file and the backend will store it for you.
+          </p>
         </div>
+
         <input
           ref={fileInputRef}
+          id='session-image'
           type='file'
           accept='image/*'
-          onChange={handleImageChange}
           className='hidden'
+          onChange={handleImageChange}
         />
-      </Card>
+
+        <Card
+          className='relative border-2 border-dashed border-border hover:border-primary hover:bg-accent/50 transition-all cursor-pointer'
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className='p-8'>
+            {preview ? (
+              <div className='space-y-4'>
+                <div
+                  className='h-40 w-full rounded-lg overflow-hidden bg-cover bg-center'
+                  style={{
+                    backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.6)), url(${preview})`,
+                  }}
+                />
+                <div className='text-center'>
+                  <p className='text-sm font-medium text-foreground'>
+                    ✓ Image selected
+                  </p>
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    Click or drag to change image
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='flex flex-col items-center justify-center gap-3 py-4'>
+                <div className='rounded-full bg-primary/10 p-3'>
+                  <Upload className='w-6 h-6 text-primary' />
+                </div>
+                <div className='text-center'>
+                  <p className='text-sm font-medium text-foreground'>
+                    Drag and drop your image
+                  </p>
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    or click to browse
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
 
       {/* Actions */}
-      <div className='flex gap-3'>
+      <div className='flex justify-end gap-3'>
         <Button
           type='button'
           variant='outline'
+          size='lg'
           onClick={() => router.back()}
           disabled={isSaving}
         >
           Cancel
         </Button>
-        <Button type='submit' disabled={isSaving} className='gap-2'>
-          {isSaving && <Loader2 className='h-4 w-4 animate-spin' />}
-          {mode === 'create' ? 'Create Session' : 'Update Session'}
+        <Button type='submit' size='lg' className='px-6' disabled={isSaving}>
+          {isSaving
+            ? 'Saving…'
+            : mode === 'create'
+              ? 'Create session'
+              : 'Update session'}
         </Button>
       </div>
     </form>

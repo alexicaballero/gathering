@@ -30,18 +30,8 @@ export default async function NewSessionPage({
   }
 
   return (
-    <div className='container mx-auto py-10'>
-      <div className='mx-auto max-w-3xl space-y-6'>
-        <div>
-          <h1 className='text-3xl font-bold'>
-            Add Session to {community.name}
-          </h1>
-          <p className='mt-2 text-muted-foreground'>
-            Create a new session for your community
-          </p>
-        </div>
-        <SessionForm mode='create' communityData={community} />
-      </div>
+    <div className='mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'>
+      <SessionForm mode='create' communityData={community} />
     </div>
   );
 }

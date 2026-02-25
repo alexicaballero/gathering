@@ -14,4 +14,6 @@ public interface ISessionRepository : IRepository<Session>
     Task<IReadOnlyList<SessionResource>> GetResourcesBySessionIdAsync(
         Guid sessionId,
         CancellationToken cancellationToken = default);
+
+    void AddResource(SessionResource resource);
 }

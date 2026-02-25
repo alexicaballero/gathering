@@ -43,6 +43,8 @@ public sealed class CreateSessionResourceCommandHandler : ICommandHandler<Create
             return Result.Failure<Guid>(addResult.Error);
         }
 
+        _sessionRepository.AddResource(addResult.Value);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(addResult.Value.Id);

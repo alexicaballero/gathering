@@ -14,25 +14,28 @@ export default function CommunityList({ communities }: CommunityListProps) {
   return (
     <section
       id='communities'
-      className='mx-auto mt-10 max-w-6xl space-y-8 px-4 pb-16 sm:mt-16 sm:px-6 lg:space-y-12 lg:px-8'
+      className='mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20'
     >
-      <div className='flex flex-col gap-3 rounded-3xl bg-muted/50 p-6 text-muted-foreground shadow-inner sm:flex-row sm:items-end sm:justify-between sm:gap-4'>
+      <div className='mb-12 space-y-4'>
         <div>
           <p className='text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/70'>
             Community of Practices
           </p>
-          <h2 className='mt-2 text-3xl font-semibold text-foreground sm:text-4xl'>
+          <h2 className='mt-3 text-4xl font-bold tracking-tight text-foreground sm:text-5xl'>
             Sessions that inspire action
           </h2>
         </div>
-        <Link href='/communities/new' className='self-start sm:self-center'>
-          <Button variant='outline' size='sm'>
-            <Plus /> Add
-          </Button>
-        </Link>
+        <div className='flex justify-end'>
+          <Link href='/communities/new'>
+            <Button size='lg' className='gap-2'>
+              <Plus className='h-5 w-5' />
+              Create Community
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+      <div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
         {communities.map((community) => (
           <CommunityCard key={community.id} community={community} />
         ))}

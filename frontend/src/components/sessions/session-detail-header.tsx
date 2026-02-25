@@ -35,44 +35,44 @@ export default function SessionDetailHeader({
         <div className='border-b border-border'>
           {session.image ? (
             <div
-              className='h-64 w-full bg-cover bg-center sm:h-80 lg:h-96'
+              className='h-72 w-full bg-cover bg-center sm:h-96 lg:h-[28rem]'
               style={{
                 backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.3), rgba(15,23,42,0.7)), url(${session.image})`,
               }}
             />
           ) : (
-            <div className='flex h-64 w-full items-center justify-center bg-linear-to-br from-muted to-muted/50 sm:h-80 lg:h-96'>
-              <span className='text-8xl font-bold text-muted-foreground/30'>
-                {initial}
+            <div className='flex h-72 w-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 sm:h-96 lg:h-[28rem]'>
+              <span className='text-9xl font-bold text-primary/20'>
+                {session.title.charAt(0).toUpperCase()}
               </span>
             </div>
           )}
         </div>
 
-        <div className='space-y-6 p-6 sm:p-8 lg:p-10'>
+        <div className='space-y-8 p-8 sm:p-10 lg:p-12'>
           <div className='space-y-4'>
-            <h1 className='text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl'>
-              {title}
+            <h1 className='text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl'>
+              {session.title}
             </h1>
-            <p className='text-lg text-muted-foreground sm:text-xl'>
+            <p className='text-lg leading-relaxed text-muted-foreground sm:text-xl'>
               {session.description || 'No description available'}
             </p>
           </div>
 
-          <div className='flex flex-wrap gap-6 text-sm text-muted-foreground'>
-            <div className='flex items-center gap-2'>
-              <Calendar className='h-4 w-4' />
-              <span>{formattedDate}</span>
+          <div className='flex flex-wrap gap-6 border-t border-border pt-6 text-sm'>
+            <div className='flex items-center gap-3'>
+              <Calendar className='h-5 w-5 text-primary' />
+              <span className='text-muted-foreground'>{formattedDate}</span>
             </div>
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-3'>
               <span className='font-semibold text-foreground'>Speaker:</span>
-              <span>{session.speaker}</span>
+              <span className='text-muted-foreground'>{session.speaker}</span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className='flex flex-wrap gap-3 pt-4'>
-            <Button asChild variant='outline' size='sm' className='gap-2'>
+          <div className='flex flex-wrap gap-3 pt-6'>
+            <Button asChild variant='outline' size='lg' className='gap-2'>
               <Link href={`/sessions/${session.id}/edit`}>
                 <Edit2 className='h-4 w-4' />
                 Edit Session
@@ -81,7 +81,7 @@ export default function SessionDetailHeader({
             <SessionDeleteButton
               sessionId={session.id}
               communityId={session.communityId}
-              size='sm'
+              size='default'
             />
           </div>
         </div>

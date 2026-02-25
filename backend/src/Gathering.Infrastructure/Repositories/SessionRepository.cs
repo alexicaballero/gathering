@@ -113,4 +113,9 @@ internal sealed class SessionRepository : ISessionRepository
 
         return resources.AsReadOnly();
     }
+
+    public void AddResource(SessionResource resource)
+    {
+        _dbContext.SessionResources.Add(resource);
+    }
 }
