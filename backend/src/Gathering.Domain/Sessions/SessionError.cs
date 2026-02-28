@@ -6,13 +6,11 @@ namespace Gathering.Domain.Sessions;
 
 public static class SessionError
 {
-    public static readonly Error ComunityInvalid = Error.Validation("Session.Community.Invalid", "Session must belong to a valid community");
+    public static readonly Error CommunityInvalid = Error.Validation("Session.Community.Invalid", "Session must belong to a valid community");
 
     public static readonly Error TitleEmpty = Error.Validation("Session.Title.Empty", "Session title cannot be empty");
 
     public static readonly Error TitleTooLong = Error.Validation("Session.Title.TooLong", "Session title cannot exceed 200 characters");
-
-    public static readonly Error DescriptionEmpty = Error.Validation("Session.Description.Empty", "Session description cannot be empty");
 
     public static readonly Error DescriptionTooLong = Error.Validation("Session.Description.TooLong", "Session description cannot exceed 1000 characters");
 
@@ -21,6 +19,8 @@ public static class SessionError
     public static readonly Error ScheduleInvalid = Error.Validation("Session.Schedule.Invalid", "Session schedule must be a future date and time");
 
     public static readonly Error NotFound = Error.NotFound("Session.NotFound", "The specified session was not found");
+
+    public static readonly Error InvalidStatusTransition = Error.Validation("Session.Status.InvalidTransition", "The requested status transition is not allowed");
 
     public static readonly Error ResourceNotFound = Error.NotFound("Session.Resource.NotFound", "The specified session resource was not found");
 

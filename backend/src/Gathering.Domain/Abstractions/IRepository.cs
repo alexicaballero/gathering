@@ -27,7 +27,7 @@ public interface IRepository<T> where T : Entity
         Expression<Func<T, bool>> predicate,
         CancellationToken cancellationToken = default);
 
-    // Commands (estos NO deberían ser async - son solo operaciones en memoria)
+    // Commands (these should NOT be async - they are in-memory operations only)
     void Add(T entity);
     void AddRange(IEnumerable<T> entities);
     void Update(T entity);

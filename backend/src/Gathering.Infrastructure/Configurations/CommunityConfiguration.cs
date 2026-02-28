@@ -1,9 +1,10 @@
 ﻿using Gathering.Domain.Communities;
+using Gathering.Domain.Sessions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gathering.Infrastructure.Configurations;
 
-public class CommunityConfiguration : IEntityTypeConfiguration<Community>
+internal sealed class CommunityConfiguration : IEntityTypeConfiguration<Community>
 {
   public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Community> builder)
   {
@@ -27,6 +28,15 @@ public class CommunityConfiguration : IEntityTypeConfiguration<Community>
 
     builder.Property(c => c.UpdatedAt);
 
-    builder.HasMany(c => c.Sessions);
+    builder.HasMany(c => c.Sessions)
+      .WithOne()
+      .HasForeignKey(s => s.CommunityId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+    builder.Navigation(c => c.Sessions)
+      .HasField("_sessions")
+      .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+    builder.HasIndex(c => c.Name);
   }
 }

@@ -1,4 +1,5 @@
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Create;
 using Gathering.SharedKernel;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gathering.Api.Endpoints.Sessions;
 
-public class Create : IEndpoint
+public sealed class Create : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -22,9 +23,9 @@ public class Create : IEndpoint
     private static async Task<IResult> Handler(
         [FromForm] Guid communityId,
         [FromForm] string title,
-        [FromForm] string description,
         [FromForm] string speaker,
-        [FromForm] DateTime schedule,
+        [FromForm] DateTimeOffset scheduledAt,
+        [FromForm] string? description,
         [FromForm(Name = "image")] IFormFile? image,
         ISender sender,
         CancellationToken cancellationToken = default)
@@ -43,9 +44,9 @@ public class Create : IEndpoint
         var command = new CreateSessionCommand(
             communityId,
             title,
-            description,
             speaker,
-            schedule,
+            scheduledAt,
+            description,
             imageStream,
             imageFileName,
             imageContentType);

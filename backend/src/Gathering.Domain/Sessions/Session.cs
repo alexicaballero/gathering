@@ -1,10 +1,8 @@
-﻿
-
-using Gathering.SharedKernel;
+﻿using Gathering.SharedKernel;
 
 namespace Gathering.Domain.Sessions;
 
-public partial class Session : AuditableEntity
+public sealed partial class Session : AuditableEntity
 {
     public Guid Id { get; private set; }
 
@@ -12,30 +10,32 @@ public partial class Session : AuditableEntity
 
     public string Title { get; private set; } = string.Empty;
 
-    public string Description { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
 
     public string? Image { get; private set; }
 
     public string Speaker { get; private set; } = string.Empty;
 
-    public DateTime Schedule { get; private set; }
+    public DateTimeOffset ScheduledAt { get; private set; }
 
-    public SessionState State { get; private set; }
+    public SessionStatus Status { get; private set; }
 
     private Session() { }
 
-    public static Result<Session> Create(Guid CommunityId, string title, string description, string speaker, DateTime schedule, string? Image)
+    public static Result<Session> Create(
+        Guid communityId,
+        string title,
+        string speaker,
+        DateTimeOffset scheduledAt,
+        string? description = null,
+        string? image = null)
     {
-        // Community validations
-
-        if (CommunityId == Guid.Empty)
+        if (communityId == Guid.Empty)
         {
-            return Result.Failure<Session>(SessionError.ComunityInvalid);
+            return Result.Failure<Session>(SessionError.CommunityInvalid);
         }
 
-        // Title validations
-
-        if (string.IsNullOrWhiteSpace(title.Trim()))
+        if (string.IsNullOrWhiteSpace(title))
         {
             return Result.Failure<Session>(SessionError.TitleEmpty);
         }
@@ -45,27 +45,17 @@ public partial class Session : AuditableEntity
             return Result.Failure<Session>(SessionError.TitleTooLong);
         }
 
-        // Description validations
-
-        if (string.IsNullOrWhiteSpace(description.Trim()))
-        {
-            return Result.Failure<Session>(SessionError.DescriptionEmpty);
-        }
-
-        if (description.Length > 1000)
+        if (description is not null && description.Length > 1000)
         {
             return Result.Failure<Session>(SessionError.DescriptionTooLong);
         }
 
-        // Speaker validations
-
-        if (string.IsNullOrWhiteSpace(speaker.Trim()))
+        if (string.IsNullOrWhiteSpace(speaker))
         {
             return Result.Failure<Session>(SessionError.SpeakerEmpty);
         }
 
-        // Schedule validations
-        if (schedule <= DateTime.UtcNow)
+        if (scheduledAt <= DateTimeOffset.UtcNow)
         {
             return Result.Failure<Session>(SessionError.ScheduleInvalid);
         }
@@ -73,13 +63,13 @@ public partial class Session : AuditableEntity
         var session = new Session
         {
             Id = Guid.NewGuid(),
-            CommunityId = CommunityId,
+            CommunityId = communityId,
             Title = title,
             Description = description,
             Speaker = speaker,
-            Schedule = schedule,
-            Image = Image,
-            State = SessionState.Scheduled
+            ScheduledAt = scheduledAt,
+            Image = image,
+            Status = SessionStatus.Scheduled
         };
 
         session.Raise(new SessionCreatedDomainEvent(session.Id));
@@ -87,10 +77,55 @@ public partial class Session : AuditableEntity
         return Result.Success(session);
     }
 
-    public Result Update(string title, string description, string speaker, DateTime schedule, string? image = null)
+    /// <summary>
+    /// Creates a session without schedule validation. For seeding/testing only.
+    /// </summary>
+    internal static Result<Session> CreateCompleted(
+        Guid communityId,
+        string title,
+        string speaker,
+        DateTimeOffset scheduledAt,
+        string? description = null,
+        string? image = null)
     {
-        // Title validations
-        if (string.IsNullOrWhiteSpace(title.Trim()))
+        if (communityId == Guid.Empty)
+        {
+            return Result.Failure<Session>(SessionError.CommunityInvalid);
+        }
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return Result.Failure<Session>(SessionError.TitleEmpty);
+        }
+
+        if (string.IsNullOrWhiteSpace(speaker))
+        {
+            return Result.Failure<Session>(SessionError.SpeakerEmpty);
+        }
+
+        var session = new Session
+        {
+            Id = Guid.NewGuid(),
+            CommunityId = communityId,
+            Title = title,
+            Description = description,
+            Speaker = speaker,
+            ScheduledAt = scheduledAt,
+            Image = image,
+            Status = SessionStatus.Completed
+        };
+
+        return Result.Success(session);
+    }
+
+    public Result Update(
+        string title,
+        string speaker,
+        DateTimeOffset scheduledAt,
+        string? description = null,
+        string? image = null)
+    {
+        if (string.IsNullOrWhiteSpace(title))
         {
             return Result.Failure(SessionError.TitleEmpty);
         }
@@ -100,37 +135,38 @@ public partial class Session : AuditableEntity
             return Result.Failure(SessionError.TitleTooLong);
         }
 
-        // Description validations
-        if (string.IsNullOrWhiteSpace(description.Trim()))
-        {
-            return Result.Failure(SessionError.DescriptionEmpty);
-        }
-
-        if (description.Length > 1000)
+        if (description is not null && description.Length > 1000)
         {
             return Result.Failure(SessionError.DescriptionTooLong);
         }
 
-        // Speaker validations
-        if (string.IsNullOrWhiteSpace(speaker.Trim()))
+        if (string.IsNullOrWhiteSpace(speaker))
         {
             return Result.Failure(SessionError.SpeakerEmpty);
         }
 
-        // Schedule validations - for updates, allow past dates (completed sessions)
-        // Only prevent scheduling in the past for new sessions
-
         Title = title;
         Description = description;
         Speaker = speaker;
-        Schedule = schedule;
+        ScheduledAt = scheduledAt;
         Image = image;
 
         return Result.Success();
     }
 
-    public void UpdateState(SessionState state)
+    public Result UpdateStatus(SessionStatus newStatus)
     {
-        State = state;
+        if (Status == SessionStatus.Canceled && newStatus == SessionStatus.Scheduled)
+        {
+            return Result.Failure(SessionError.InvalidStatusTransition);
+        }
+
+        if (Status == SessionStatus.Completed && newStatus == SessionStatus.Scheduled)
+        {
+            return Result.Failure(SessionError.InvalidStatusTransition);
+        }
+
+        Status = newStatus;
+        return Result.Success();
     }
 }

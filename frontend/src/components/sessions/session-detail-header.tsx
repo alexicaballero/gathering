@@ -13,14 +13,17 @@ export default function SessionDetailHeader({
 }: SessionDetailHeaderProps) {
   const title = session.title;
   const initial = title.charAt(0).toUpperCase();
-  const scheduleDate = new Date(session.schedule);
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(scheduleDate);
+  const scheduleDate = session.schedule ? new Date(session.schedule) : null;
+  const isValidDate = scheduleDate && !isNaN(scheduleDate.getTime());
+  const formattedDate = isValidDate
+    ? new Intl.DateTimeFormat('en-US', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(scheduleDate)
+    : 'Date not set';
 
   return (
     <div className='space-y-6'>

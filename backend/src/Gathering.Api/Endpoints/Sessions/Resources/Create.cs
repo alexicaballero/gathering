@@ -1,4 +1,5 @@
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Resources.Create;
 using Gathering.Domain.Sessions;

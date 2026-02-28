@@ -9,16 +9,16 @@ public sealed class CreateCommunityCommandValidator : AbstractValidator<CreateCo
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("Community name is required.")
-            .MaximumLength(100)
-            .WithMessage("Community name cannot exceed 100 characters.")
+            .MaximumLength(200)
+            .WithMessage("Community name cannot exceed 200 characters.")
             .Matches(@"^[a-zA-Z0-9\s\-_.]+$")
             .WithMessage("Community name contains invalid characters.");
 
         RuleFor(x => x.Description)
             .NotEmpty()
             .WithMessage("Community description is required.")
-            .MaximumLength(500)
-            .WithMessage("Community description cannot exceed 500 characters.")
+            .MaximumLength(1000)
+            .WithMessage("Community description cannot exceed 1000 characters.")
             .MinimumLength(10)
             .WithMessage("Community description must be at least 10 characters.");
 

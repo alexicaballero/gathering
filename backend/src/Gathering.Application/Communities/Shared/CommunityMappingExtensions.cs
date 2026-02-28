@@ -26,7 +26,7 @@ internal static class CommunityMappingExtensions
             session.Title,
             session.Description,
             session.Speaker,
-            session.Schedule,
-            session.State.ToString());
+            session.ScheduledAt,
+            session.Status.ToString());
     }
 }

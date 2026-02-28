@@ -1,6 +1,6 @@
 using Gathering.SharedKernel;
 
-namespace Gathering.Api.Extensions;
+namespace Gathering.Api.Infrastructure;
 
 public static class CustomResults
 {

@@ -20,16 +20,17 @@ builder.Services
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+        ?? ["http://localhost:3000"];
+
     options.AddPolicy("AllowGatheringFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(allowedOrigins)
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
     });
 });
-
-builder.Services.AddAntiforgery();
 
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
@@ -44,11 +45,11 @@ app.UseExceptionHandler();
 // Enable CORS
 app.UseCors("AllowGatheringFrontend");
 
-// Enable anti-forgery protection
-app.UseAntiforgery();
-
-// Seed database
-await SeedDatabaseAsync(app);
+// Seed database (development only)
+if (app.Environment.IsDevelopment())
+{
+    await SeedDatabaseAsync(app);
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -61,18 +62,18 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 ApiVersionSet apiVersionSet = app.NewApiVersionSet()
   .HasApiVersion(new ApiVersion(1))
   .ReportApiVersions()
   .Build();
 
-RouteGroupBuilder versionesGroup = app
+RouteGroupBuilder versionedGroup = app
   .MapGroup("/api/v{version:apiVersion}")
   .WithApiVersionSet(apiVersionSet);
 
-app.MapEndpoints(versionesGroup);
+app.MapEndpoints(versionedGroup);
 
 app.Run();
 

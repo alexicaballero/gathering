@@ -7,7 +7,7 @@ namespace Gathering.Application.Communities.GetAll;
 
 public sealed class GetCommunitiesQueryHandler : IQueryHandler<GetCommunitiesQuery, IReadOnlyList<CommunityResponse>>
 {
-    private ICommunityRepository _communityRepository;
+    private readonly ICommunityRepository _communityRepository;
 
     public GetCommunitiesQueryHandler(ICommunityRepository communityRepository)
     {
@@ -16,7 +16,7 @@ public sealed class GetCommunitiesQueryHandler : IQueryHandler<GetCommunitiesQue
 
     public async Task<Result<IReadOnlyList<CommunityResponse>>> HandleAsync(GetCommunitiesQuery request, CancellationToken cancellationToken = default)
     {
-        var communities = await _communityRepository.GetAllAsync();
+        var communities = await _communityRepository.GetAllAsync(cancellationToken);
 
         var response = communities.ToResponse();
 

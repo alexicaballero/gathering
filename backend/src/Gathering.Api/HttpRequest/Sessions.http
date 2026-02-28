@@ -25,7 +25,7 @@ Content-Disposition: form-data; name="speaker"
 
 Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T10:00:00
 ------FormBoundary--
@@ -51,7 +51,7 @@ Content-Disposition: form-data; name="speaker"
 
 Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T10:00:00
 ------FormBoundary
@@ -78,16 +78,16 @@ Content-Disposition: form-data; name="speaker"
 
 Updated Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T14:00:00
 ------FormBoundary
-Content-Disposition: form-data; name="state"
+Content-Disposition: form-data; name="status"
 
 0
 ------FormBoundary--
 
-# Session States:
+# Session Statuses:
 # 0 = Scheduled
 # 1 = Completed
 # 2 = Canceled
@@ -109,11 +109,11 @@ Content-Disposition: form-data; name="speaker"
 
 Updated Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T14:00:00
 ------FormBoundary
-Content-Disposition: form-data; name="state"
+Content-Disposition: form-data; name="status"
 
 0
 ------FormBoundary
@@ -140,11 +140,11 @@ Content-Disposition: form-data; name="speaker"
 
 Updated Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T14:00:00
 ------FormBoundary
-Content-Disposition: form-data; name="state"
+Content-Disposition: form-data; name="status"
 
 1
 ------FormBoundary--
@@ -166,11 +166,11 @@ Content-Disposition: form-data; name="speaker"
 
 Updated Speaker Name
 ------FormBoundary
-Content-Disposition: form-data; name="schedule"
+Content-Disposition: form-data; name="scheduledAt"
 
 2026-03-15T14:00:00
 ------FormBoundary
-Content-Disposition: form-data; name="state"
+Content-Disposition: form-data; name="status"
 
 2
 ------FormBoundary--

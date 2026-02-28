@@ -1,10 +1,11 @@
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.GetById;
 
 namespace Gathering.Api.Endpoints.Sessions;
 
-public class GetById : IEndpoint
+public sealed class GetById : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

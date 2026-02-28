@@ -7,7 +7,7 @@ namespace Gathering.Application.Common.Validators;
 /// </summary>
 public static class FileValidator
 {
-    private const long MaxFileSizeBytes = 50 * 1024 * 1024; // 10 MB
+    private const long MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
 
     private static readonly HashSet<string> AllowedContentTypes =
     [

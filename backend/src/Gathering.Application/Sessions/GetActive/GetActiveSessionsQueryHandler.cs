@@ -27,7 +27,7 @@ public sealed class GetActiveSessionsQueryHandler : IQueryHandler<GetActiveSessi
         s.Description,
         s.Image,
         s.Speaker,
-        s.Schedule,
-        s.State)).ToList().AsReadOnly();
+        s.ScheduledAt,
+        s.Status)).ToList().AsReadOnly();
   }
 }

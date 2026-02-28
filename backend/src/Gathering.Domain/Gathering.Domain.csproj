@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Gathering.Infrastructure" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Gathering.SharedKernel\Gathering.SharedKernel.csproj" />
   </ItemGroup>
 

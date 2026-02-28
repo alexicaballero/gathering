@@ -29,7 +29,7 @@ public sealed class GetSessionByIdQueryHandler : IQueryHandler<GetSessionByIdQue
             session.Description,
             session.Image,
             session.Speaker,
-            session.Schedule,
-            session.State);
+            session.ScheduledAt,
+            session.Status);
     }
 }

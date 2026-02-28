@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gathering.Infrastructure;
 
-public class ApplicationDbContext : DbContext, IUnitOfWork
+public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
     private readonly IDateTimeProvider? _dateTimeProvider;
 
@@ -40,7 +40,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
     private void ApplyAuditInfo()
     {
-        var now = _dateTimeProvider?.UtcNow ?? DateTime.UtcNow;
+        var now = _dateTimeProvider?.UtcNow ?? DateTimeOffset.UtcNow;
 
         foreach (var entry in ChangeTracker.Entries<IAuditable>())
         {

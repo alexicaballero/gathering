@@ -21,15 +21,18 @@ interface SessionCardProps {
 export default function SessionCard({ session }: SessionCardProps) {
   const title = session.title;
   const initial = title.charAt(0).toUpperCase();
-  const scheduleDate = new Date(session.schedule);
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(scheduleDate);
+  const scheduleDate = session.schedule ? new Date(session.schedule) : null;
+  const isValidDate = scheduleDate && !isNaN(scheduleDate.getTime());
+  const formattedDate = isValidDate
+    ? new Intl.DateTimeFormat('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).format(scheduleDate)
+    : 'Date not set';
 
   // Check if session is upcoming
-  const isUpcoming = new Date(session.schedule) > new Date();
+  const isUpcoming = isValidDate && scheduleDate > new Date();
 
   return (
     <Card className='group relative overflow-hidden transition-all hover:shadow-xl hover:scale-105 flex flex-col'>

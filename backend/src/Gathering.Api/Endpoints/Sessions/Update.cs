@@ -1,14 +1,14 @@
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Update;
 using Gathering.Domain.Sessions;
 using Microsoft.AspNetCore.Mvc;
-using Gathering.Infrastructure;
 using Gathering.SharedKernel;
 
 namespace Gathering.Api.Endpoints.Sessions;
 
-public class Update : IEndpoint
+public sealed class Update : IEndpoint
 {
   public void MapEndpoint(IEndpointRouteBuilder app)
   {
@@ -25,10 +25,10 @@ public class Update : IEndpoint
   private static async Task<IResult> Handler(
     Guid id,
     [FromForm] string title,
-    [FromForm] string description,
     [FromForm] string speaker,
-    [FromForm] DateTime schedule,
-    [FromForm] SessionState state,
+    [FromForm] DateTimeOffset scheduledAt,
+    [FromForm] SessionStatus status,
+    [FromForm] string? description,
     [FromForm(Name = "image")] IFormFile? image,
     ISender sender,
     CancellationToken cancellationToken = default)
@@ -47,10 +47,10 @@ public class Update : IEndpoint
     var updateSessionCommand = new UpdateSessionCommand(
       id,
       title,
-      description,
       speaker,
-      schedule,
-      state,
+      scheduledAt,
+      status,
+      description,
       imageStream,
       imageFileName,
       imageContentType);

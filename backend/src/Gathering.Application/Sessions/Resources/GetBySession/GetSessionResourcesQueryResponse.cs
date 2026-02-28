@@ -9,5 +9,5 @@ public sealed record GetSessionResourcesQueryResponse(
     string? Title,
     string? Url,
     string? Notes,
-    DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? UpdatedAt);

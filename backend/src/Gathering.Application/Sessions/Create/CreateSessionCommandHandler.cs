@@ -77,7 +77,7 @@ public sealed class CreateSessionCommandHandler : ICommandHandler<CreateSessionC
             imageUrl = uploadResult.Value;
         }
 
-        var sessionResult = Session.Create(request.CommunityId, request.Title, request.Description, request.Speaker, request.Schedule, imageUrl);
+        var sessionResult = Session.Create(request.CommunityId, request.Title, request.Speaker, request.ScheduledAt, request.Description, imageUrl);
 
         if (sessionResult.IsFailure)
         {

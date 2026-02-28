@@ -99,7 +99,7 @@ internal sealed class SessionRepository : ISessionRepository
     public async Task<IReadOnlyList<Session>> GetActiveSessionsAsync(CancellationToken cancellationToken = default)
     {
         var sessions = await _dbContext.Sessions
-            .Where(s => s.State == SessionState.Scheduled)
+            .Where(s => s.Status == SessionStatus.Scheduled)
             .ToListAsync(cancellationToken);
 
         return sessions.AsReadOnly();

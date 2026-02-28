@@ -1,4 +1,5 @@
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Communities.Create;
 using Gathering.SharedKernel;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gathering.Api.Endpoints.Communities;
 
-public class Create : IEndpoint
+public sealed class Create : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

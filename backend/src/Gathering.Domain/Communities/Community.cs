@@ -3,7 +3,7 @@ using Gathering.SharedKernel;
 
 namespace Gathering.Domain.Communities;
 
-public class Community : AuditableEntity
+public sealed class Community : AuditableEntity
 {
     public Guid Id { get; private set; }
 
@@ -13,14 +13,15 @@ public class Community : AuditableEntity
 
     public string? Image { get; private set; }
 
-    public List<Session> Sessions { get; private set; } = [];
+    private readonly List<Session> _sessions = [];
+
+    public IReadOnlyCollection<Session> Sessions => _sessions.AsReadOnly();
 
     private Community() { }
 
     public static Result<Community> Create(string name, string description, string? image = null)
     {
-        // Validation for Name
-        if (string.IsNullOrWhiteSpace(name.Trim()))
+        if (string.IsNullOrWhiteSpace(name))
         {
             return Result.Failure<Community>(CommunityError.NameEmpty);
         }
@@ -30,8 +31,7 @@ public class Community : AuditableEntity
             return Result.Failure<Community>(CommunityError.NameTooLong);
         }
 
-        // Validation for Description
-        if (string.IsNullOrWhiteSpace(description.Trim()))
+        if (string.IsNullOrWhiteSpace(description))
         {
             return Result.Failure<Community>(CommunityError.DescriptionEmpty);
         }
@@ -56,8 +56,7 @@ public class Community : AuditableEntity
 
     public Result Update(string name, string description, string? image = null)
     {
-        // Validation for Name
-        if (string.IsNullOrWhiteSpace(name.Trim()))
+        if (string.IsNullOrWhiteSpace(name))
         {
             return Result.Failure(CommunityError.NameEmpty);
         }
@@ -67,8 +66,7 @@ public class Community : AuditableEntity
             return Result.Failure(CommunityError.NameTooLong);
         }
 
-        // Validation for Description
-        if (string.IsNullOrWhiteSpace(description.Trim()))
+        if (string.IsNullOrWhiteSpace(description))
         {
             return Result.Failure(CommunityError.DescriptionEmpty);
         }
@@ -89,23 +87,19 @@ public class Community : AuditableEntity
     /// Adds a session to the community.
     /// Validates that the session belongs to this community and is not already in the list.
     /// </summary>
-    /// <param name="session">The session to add</param>
-    /// <returns>A result indicating success or failure</returns>
     public Result AddSession(Session session)
     {
-        // Validate that the session belongs to this community
         if (session.CommunityId != Id)
         {
             return Result.Failure(CommunityError.SessionNotBelongsToCommunity);
         }
 
-        // Validate that the session is not already in the list
-        if (Sessions.Any(s => s.Id == session.Id))
+        if (_sessions.Any(s => s.Id == session.Id))
         {
             return Result.Failure(CommunityError.SessionAlreadyExists);
         }
 
-        Sessions.Add(session);
+        _sessions.Add(session);
 
         return Result.Success();
     }
@@ -113,18 +107,16 @@ public class Community : AuditableEntity
     /// <summary>
     /// Removes a session from the community.
     /// </summary>
-    /// <param name="sessionId">The ID of the session to remove</param>
-    /// <returns>A result indicating success or failure</returns>
     public Result RemoveSession(Guid sessionId)
     {
-        var session = Sessions.FirstOrDefault(s => s.Id == sessionId);
+        var session = _sessions.FirstOrDefault(s => s.Id == sessionId);
 
         if (session is null)
         {
             return Result.Failure(CommunityError.SessionNotFound);
         }
 
-        Sessions.Remove(session);
+        _sessions.Remove(session);
 
         return Result.Success();
     }

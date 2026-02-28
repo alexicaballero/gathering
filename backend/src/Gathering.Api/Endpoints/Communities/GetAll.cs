@@ -1,9 +1,11 @@
-﻿using Gathering.Application.Abstractions;
+﻿using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
+using Gathering.Application.Abstractions;
 using Gathering.Application.Communities.GetAll;
 
 namespace Gathering.Api.Endpoints.Communities;
 
-public class GetAll : IEndpoint
+public sealed class GetAll : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -13,7 +15,7 @@ public class GetAll : IEndpoint
 
             var communities = await sender.Send(communitiesQuery, cancellationToken);
 
-            return Results.Ok(communities.Value);
+            return communities.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(ApiTags.Community);
     }

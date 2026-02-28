@@ -15,16 +15,15 @@ public sealed class UpdateSessionCommandValidator : AbstractValidator<UpdateSess
             .MaximumLength(200).WithMessage("Session title cannot exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .NotEmpty().WithMessage("Session description cannot be empty.")
             .MaximumLength(1000).WithMessage("Session description cannot exceed 1000 characters.");
 
         RuleFor(x => x.Speaker)
             .NotEmpty().WithMessage("Session speaker cannot be empty.");
 
-        RuleFor(x => x.State)
-            .Must(BeValidState).WithMessage("Invalid session state.");
+        RuleFor(x => x.Status)
+            .Must(BeValidStatus).WithMessage("Invalid session status.");
 
-        RuleFor(x => x.Schedule)
+        RuleFor(x => x.ScheduledAt)
             .NotEmpty().WithMessage("Session schedule cannot be empty.");
 
         // Image validation: if image stream is provided, fileName and contentType must also be provided
@@ -40,8 +39,8 @@ public sealed class UpdateSessionCommandValidator : AbstractValidator<UpdateSess
         });
     }
 
-    private static bool BeValidState(SessionState state)
+    private static bool BeValidStatus(SessionStatus status)
     {
-        return Enum.IsDefined(typeof(SessionState), state);
+        return Enum.IsDefined(typeof(SessionStatus), status);
     }
 }

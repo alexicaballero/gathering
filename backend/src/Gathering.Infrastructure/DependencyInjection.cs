@@ -20,27 +20,27 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(
-            configuration.GetConnectionString("DefaultConnection"),
-            sqlOptions =>
-            {
-                sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-            });
+                configuration.GetConnectionString("DefaultConnection"),
+                sqlOptions =>
+                {
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                });
         });
-        {
-            services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
-            services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<ICommunityRepository, CommunityRepository>();
-            services.AddScoped<ISessionRepository, SessionRepository>();
 
-            // Azure Blob Storage
-            var azureStorageConnectionString = configuration.GetSection("AzureStorage:ConnectionString").Value;
-            services.AddSingleton(new BlobServiceClient(azureStorageConnectionString));
-            services.AddScoped<IImageStorageService, AzureBlobStorageService>();
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<ICommunityRepository, CommunityRepository>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
 
-            return services;
-        }
+        // Azure Blob Storage
+        var azureStorageConnectionString = configuration.GetSection("AzureStorage:ConnectionString").Value
+            ?? throw new InvalidOperationException("AzureStorage:ConnectionString is not configured.");
+        services.AddSingleton(new BlobServiceClient(azureStorageConnectionString));
+        services.AddScoped<IImageStorageService, AzureBlobStorageService>();
+
+        return services;
     }
 }

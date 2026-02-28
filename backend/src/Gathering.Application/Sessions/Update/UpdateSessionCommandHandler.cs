@@ -81,9 +81,9 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
 
         var updateResult = session.Update(
             command.Title,
-            command.Description,
             command.Speaker,
-            command.Schedule,
+            command.ScheduledAt,
+            command.Description,
             newImageUrl);
 
         if (updateResult.IsFailure)
@@ -91,7 +91,12 @@ public sealed class UpdateSessionCommandHandler : ICommandHandler<UpdateSessionC
             return Result.Failure<Guid>(updateResult.Error);
         }
 
-        session.UpdateState(command.State);
+        var statusResult = session.UpdateStatus(command.Status);
+
+        if (statusResult.IsFailure)
+        {
+            return Result.Failure<Guid>(statusResult.Error);
+        }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -1,9 +1,11 @@
+using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.GetActive;
 
 namespace Gathering.Api.Endpoints.Sessions;
 
-public class GetActive : IEndpoint
+public sealed class GetActive : IEndpoint
 {
   public void MapEndpoint(IEndpointRouteBuilder app)
   {
@@ -13,7 +15,7 @@ public class GetActive : IEndpoint
 
       var result = await sender.Send(query, cancellationToken);
 
-      return Results.Ok(result.Value);
+      return result.Match(Results.Ok, CustomResults.Problem);
     })
     .WithTags(ApiTags.Session);
   }

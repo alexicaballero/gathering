@@ -42,7 +42,19 @@ async function executeRequest<T>(url: string, config: RequestInit): Promise<T> {
     }
   } catch (error) {
     if (error instanceof Error) {
-      throw error; // Re-throw with original message
+      // Provide a clearer message for connection failures
+      if (
+        error.message === 'fetch failed' ||
+        (error.cause &&
+          typeof error.cause === 'object' &&
+          'code' in error.cause &&
+          error.cause.code === 'ECONNREFUSED')
+      ) {
+        throw new Error(
+          `Unable to connect to the API server at ${url}. Please ensure the backend is running.`,
+        );
+      }
+      throw error;
     }
     throw new Error(`Failed to fetch from ${url}`);
   }

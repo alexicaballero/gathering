@@ -17,8 +17,6 @@ public sealed class CreateSessionCommandValidator : AbstractValidator<CreateSess
             .WithMessage("Session title cannot exceed 200 characters.");
 
         RuleFor(x => x.Description)
-            .NotEmpty()
-            .WithMessage("Session description is required.")
             .MaximumLength(1000)
             .WithMessage("Session description cannot exceed 1000 characters.");
 
@@ -28,10 +26,10 @@ public sealed class CreateSessionCommandValidator : AbstractValidator<CreateSess
             .MaximumLength(100)
             .WithMessage("Speaker name cannot exceed 100 characters.");
 
-        RuleFor(x => x.Schedule)
+        RuleFor(x => x.ScheduledAt)
             .NotEmpty()
             .WithMessage("Session schedule is required.")
-            .Must(schedule => schedule > DateTime.UtcNow)
+            .Must(scheduledAt => scheduledAt > DateTimeOffset.UtcNow)
             .WithMessage("Session schedule must be in the future.");
 
         // Image validation: if image stream is provided, fileName and contentType must also be provided

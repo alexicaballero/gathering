@@ -1,9 +1,11 @@
 ﻿using Gathering.Api.Endpoints;
 using Gathering.Api.Extensions;
+using Gathering.Api.Infrastructure;
 using Gathering.Application.Abstractions;
 using Gathering.Application.Sessions.Delete;
 using Gathering.SharedKernel;
 
+namespace Gathering.Api.Endpoints.Sessions;
 
 public sealed class Delete : IEndpoint
 {

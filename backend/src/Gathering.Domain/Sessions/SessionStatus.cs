@@ -1,6 +1,6 @@
 ﻿namespace Gathering.Domain.Sessions;
 
-public enum SessionState
+public enum SessionStatus
 {
     Scheduled = 0,
     Completed = 1,

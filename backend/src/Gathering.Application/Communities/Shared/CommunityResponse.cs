@@ -10,7 +10,7 @@ public sealed record CommunityResponse(
 public sealed record SessionResponse(
   Guid Id,
   string Title,
-  string Description,
+  string? Description,
   string Speaker,
-  DateTime Schedule,
-  string State);
+  DateTimeOffset ScheduledAt,
+  string Status);

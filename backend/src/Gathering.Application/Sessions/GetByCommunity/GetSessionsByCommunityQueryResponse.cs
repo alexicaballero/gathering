@@ -6,8 +6,8 @@ public sealed record GetSessionsByCommunityQueryResponse(
     Guid Id,
     Guid CommunityId,
     string Title,
-    string Description,
+    string? Description,
     string? Image,
     string Speaker,
-    DateTime Schedule,
-    SessionState State);
+    DateTimeOffset ScheduledAt,
+    SessionStatus Status);
