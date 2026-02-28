@@ -2,7 +2,7 @@ import {
   getSessionById,
   getSessionResources,
 } from '@/lib/actions/session-actions';
-import { Metadata } from 'next/dist/lib/metadata/types/metadata-interface';
+import type { Metadata } from 'next';
 import SessionDetailHeader from '@/components/sessions/session-detail-header';
 import SessionResourceList from '@/components/sessions/session-resource-list';
 import { NotFoundMessage } from '@/components/not-found-message';
@@ -21,14 +21,16 @@ interface SessionPageProps {
 export default async function SessionPage({ params }: SessionPageProps) {
   const { id } = await params;
 
-  const session = await getSessionById(id);
-  const resources = await getSessionResources(id);
+  const [session, resources] = await Promise.all([
+    getSessionById(id),
+    getSessionResources(id),
+  ]);
 
   if (!session) {
     return (
       <NotFoundMessage
-        title='Sesión no encontrada'
-        description='La sesión seleccionada no existe o fue eliminada.'
+        title='Session not found'
+        description='The selected session does not exist or has been deleted.'
       />
     );
   }

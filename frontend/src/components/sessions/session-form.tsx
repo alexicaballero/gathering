@@ -7,6 +7,10 @@ import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Session, SessionState, Community } from '@/lib/types';
 import {
   createSessionWithFormData,
@@ -171,13 +175,8 @@ export default function SessionForm({
 
       {/* Title */}
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='session-title'
-        >
-          Title
-        </label>
-        <input
+        <Label htmlFor='session-title'>Title</Label>
+        <Input
           id='session-title'
           type='text'
           value={title}
@@ -185,7 +184,6 @@ export default function SessionForm({
           placeholder='Enter session title'
           required
           maxLength={200}
-          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
         />
         <p className='text-xs text-muted-foreground'>
           {title.length}/200 characters
@@ -194,13 +192,8 @@ export default function SessionForm({
 
       {/* Description */}
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='session-description'
-        >
-          Description
-        </label>
-        <textarea
+        <Label htmlFor='session-description'>Description</Label>
+        <Textarea
           id='session-description'
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -208,7 +201,6 @@ export default function SessionForm({
           required
           maxLength={1000}
           rows={4}
-          className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
         />
         <p className='text-xs text-muted-foreground'>
           {description.length}/1000 characters
@@ -217,60 +209,42 @@ export default function SessionForm({
 
       {/* Speaker */}
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='session-speaker'
-        >
-          Speaker Name
-        </label>
-        <input
+        <Label htmlFor='session-speaker'>Speaker Name</Label>
+        <Input
           id='session-speaker'
           type='text'
           value={speaker}
           onChange={(e) => setSpeaker(e.target.value)}
           placeholder='Enter speaker name'
           required
-          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
         />
       </div>
 
       {/* Schedule */}
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='session-schedule'
-        >
-          Schedule
-        </label>
-        <input
+        <Label htmlFor='session-schedule'>Schedule</Label>
+        <Input
           id='session-schedule'
           type='datetime-local'
           value={schedule}
           onChange={(e) => setSchedule(e.target.value)}
           required
-          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
         />
       </div>
 
       {/* State (Edit Only) */}
       {mode === 'edit' && (
         <div className='space-y-2'>
-          <label
-            className='text-sm font-medium text-foreground'
-            htmlFor='session-state'
-          >
-            Status
-          </label>
-          <select
+          <Label htmlFor='session-state'>Status</Label>
+          <Select
             id='session-state'
             value={state}
             onChange={(e) => setState(Number(e.target.value) as SessionState)}
-            className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
           >
             <option value={SessionState.Scheduled}>Scheduled</option>
             <option value={SessionState.Completed}>Completed</option>
             <option value={SessionState.Canceled}>Canceled</option>
-          </select>
+          </Select>
         </div>
       )}
 

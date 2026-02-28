@@ -24,17 +24,6 @@ export async function getSessionById(id: string): Promise<Session> {
 }
 
 /**
- * Get sessions by community without cache (always fetch fresh data)
- */
-export async function getSessionsByCommunityNoCache(
-  id: string,
-): Promise<Session[]> {
-  return api.get<Session[]>(`/api/v1/sessions/community/${id}`, {
-    cache: 'no-store',
-  });
-}
-
-/**
  * Create a new session using FormData (for file uploads)
  */
 export async function createSessionWithFormData(
@@ -59,25 +48,6 @@ export async function updateSessionWithFormData(
   // Revalidate all paths that might show sessions
   revalidatePath('/communities');
   revalidatePath('/sessions');
-}
-
-/**
- * Create a new session
- */
-export async function createSession(
-  data: Omit<Session, 'id' | 'created_at' | 'updated_at'>,
-): Promise<Session> {
-  return api.post<Session>('/api/v1/sessions', data);
-}
-
-/**
- * Update an existing session
- */
-export async function updateSession(
-  id: string,
-  data: Partial<Session>,
-): Promise<Session> {
-  return api.put<Session>(`/api/v1/sessions/${id}`, data);
 }
 
 /**

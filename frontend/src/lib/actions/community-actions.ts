@@ -25,15 +25,6 @@ export async function getCommunity(id: string): Promise<Community> {
 }
 
 /**
- * Get communities without cache (always fetch fresh data)
- */
-export async function getCommunitiesNoCache(): Promise<Community[]> {
-  return api.get<Community[]>('/api/v1/communities', {
-    cache: 'no-store',
-  });
-}
-
-/**
  * Create a new community
  */
 export async function createCommunity(

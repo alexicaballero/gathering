@@ -35,13 +35,13 @@ export default function SessionDetailHeader({
         <div className='border-b border-border'>
           {session.image ? (
             <div
-              className='h-72 w-full bg-cover bg-center sm:h-96 lg:h-[28rem]'
+              className='h-72 w-full bg-cover bg-center sm:h-96 lg:h-112'
               style={{
                 backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.3), rgba(15,23,42,0.7)), url(${session.image})`,
               }}
             />
           ) : (
-            <div className='flex h-72 w-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 sm:h-96 lg:h-[28rem]'>
+            <div className='flex h-72 w-full items-center justify-center bg-linear-to-br from-primary/20 to-primary/10 sm:h-96 lg:h-112'>
               <span className='text-9xl font-bold text-primary/20'>
                 {session.title.charAt(0).toUpperCase()}
               </span>

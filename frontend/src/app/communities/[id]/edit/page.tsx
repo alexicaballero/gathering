@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import CommunityForm from '@/components/communities/community-form';
 import { getCommunity } from '@/lib/actions/community-actions';
-import { Metadata } from 'next/dist/lib/metadata/types/metadata-interface';
+import type { Metadata } from 'next';
 
 export function generateMetadata(): Metadata {
   return {

@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import MobileNav from './mobile-nav';
 
 export default async function SiteHeader() {
   const communities = await getCommunities();
@@ -31,6 +32,11 @@ export default async function SiteHeader() {
             Gathering
           </span>
         </Link>
+
+        {/* Mobile nav */}
+        <MobileNav
+          communities={communities.map((c) => ({ id: c.id, name: c.name }))}
+        />
 
         {/* Desktop nav */}
         <nav className='hidden items-center gap-1 md:flex'>

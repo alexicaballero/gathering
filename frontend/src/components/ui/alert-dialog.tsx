@@ -47,9 +47,7 @@ export function AlertDialog({
         </button>
 
         <div className='flex gap-3'>
-          <AlertCircle
-            className={`h-5 w-5 flex-shrink-0 ${colorMap[variant]}`}
-          />
+          <AlertCircle className={`h-5 w-5 shrink-0 ${colorMap[variant]}`} />
           <div className='flex-1'>
             <h2 className='text-lg font-semibold'>{title}</h2>
             <p className='mt-2 text-sm text-muted-foreground'>{description}</p>

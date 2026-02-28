@@ -52,7 +52,7 @@ export default function CommunityDeleteButton({
         className={`gap-1 ${className}`}
       >
         <Trash2 className='h-3 w-3' />
-        {size === 'sm' ? 'Del' : 'Delete'}
+        Delete
       </Button>
 
       <ConfirmDialog

@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Gathering - Comunidades de Practica',
+  title: 'Gathering - Communities of Practice',
   description:
-    'Administra y explora sesiones de comunidades de practica en Frontend, Python y Cloud.',
+    'Manage and explore sessions from communities of practice in Frontend, Python and Cloud.',
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='es'>
+    <html lang='en'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >

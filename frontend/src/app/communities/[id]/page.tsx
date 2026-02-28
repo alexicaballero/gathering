@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import CommunityDeleteButton from '@/components/communities/community-delete-button';
 import { getCommunity } from '@/lib/actions/community-actions';
 import { getSessionsByCommunity } from '@/lib/actions/session-actions';
-import { Metadata } from 'next/dist/lib/metadata/types/metadata-interface';
+import type { Metadata } from 'next';
 import { NotFoundMessage } from '@/components/not-found-message';
 import { Edit2, Plus } from 'lucide-react';
 
@@ -22,22 +22,19 @@ interface CommunityPageProps {
 export default async function CommunityPage({ params }: CommunityPageProps) {
   const { id } = await params;
 
-  const communityPromise = getCommunity(id);
-  const sessionsPromise = getSessionsByCommunity(id);
-
-  const community = await communityPromise;
+  const [community, sessions] = await Promise.all([
+    getCommunity(id),
+    getSessionsByCommunity(id),
+  ]);
 
   if (!community) {
-    await sessionsPromise.catch(() => undefined);
     return (
       <NotFoundMessage
-        title='Comunidad no encontrada'
-        description='La comunidad que estás buscando no existe.'
+        title='Community not found'
+        description='The community you are looking for does not exist.'
       />
     );
   }
-
-  const sessions = await sessionsPromise;
 
   return (
     <div className='w-full'>
@@ -51,7 +48,7 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
             }}
           />
         ) : (
-          <div className='flex h-64 w-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 sm:h-80 lg:h-96'>
+          <div className='flex h-64 w-full items-center justify-center bg-linear-to-br from-primary/20 to-primary/10 sm:h-80 lg:h-96'>
             <span className='text-8xl font-bold text-primary/20'>
               {community.name.charAt(0).toUpperCase()}
             </span>

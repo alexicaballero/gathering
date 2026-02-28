@@ -32,13 +32,13 @@ async function executeRequest<T>(url: string, config: RequestInit): Promise<T> {
     const text = await response.text();
 
     if (!text || response.status === 204) {
-      return {} as T;
+      return undefined as unknown as T;
     }
 
     try {
-      return JSON.parse(text);
+      return JSON.parse(text) as T;
     } catch {
-      return {} as T;
+      return undefined as unknown as T;
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -56,7 +56,6 @@ async function request<T>(
   options?: FetchOptions,
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log('url', url);
 
   const config: RequestInit = {
     ...options,
@@ -75,7 +74,6 @@ async function formRequest<T>(
   options?: FetchOptions,
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log('url', url);
 
   const config: RequestInit = {
     ...options,
@@ -136,21 +134,6 @@ export async function del<T>(
   options?: FetchOptions,
 ): Promise<T> {
   return request<T>(endpoint, { ...options, method: 'DELETE' });
-}
-
-/**
- * PATCH request
- */
-export async function patch<T>(
-  endpoint: string,
-  data?: unknown,
-  options?: FetchOptions,
-): Promise<T> {
-  return request<T>(endpoint, {
-    ...options,
-    method: 'PATCH',
-    body: data ? JSON.stringify(data) : undefined,
-  });
 }
 
 export async function postFormData<T>(

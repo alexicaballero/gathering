@@ -39,7 +39,7 @@ export default function CommunityCard({ community }: CommunityCardProps) {
             }}
           />
         ) : (
-          <div className='flex h-48 w-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10'>
+          <div className='flex h-48 w-full items-center justify-center bg-linear-to-br from-primary/20 to-primary/10'>
             <span className='text-5xl font-bold text-primary/20'>
               {community.name.charAt(0).toUpperCase()}
             </span>

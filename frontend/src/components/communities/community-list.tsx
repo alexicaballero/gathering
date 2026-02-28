@@ -36,9 +36,20 @@ export default function CommunityList({ communities }: CommunityListProps) {
       </div>
 
       <div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
-        {communities.map((community) => (
-          <CommunityCard key={community.id} community={community} />
-        ))}
+        {communities.length > 0 ? (
+          communities.map((community) => (
+            <CommunityCard key={community.id} community={community} />
+          ))
+        ) : (
+          <div className='col-span-full rounded-lg border border-dashed border-border bg-muted/30 p-12 text-center'>
+            <h3 className='text-xl font-semibold text-foreground'>
+              No communities yet
+            </h3>
+            <p className='mt-2 text-sm text-muted-foreground'>
+              Create your first community of practice to get started.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

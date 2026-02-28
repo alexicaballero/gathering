@@ -42,7 +42,7 @@ export function ConfirmDialog({
       >
         <div className='flex gap-3'>
           {isDestructive && (
-            <AlertCircle className='h-5 w-5 flex-shrink-0 text-destructive' />
+            <AlertCircle className='h-5 w-5 shrink-0 text-destructive' />
           )}
           <div className='flex-1'>
             <h2 className='text-lg font-semibold'>{title}</h2>

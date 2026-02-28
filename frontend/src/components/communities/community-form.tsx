@@ -6,6 +6,9 @@ import { Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Community } from '@/lib/types';
 import { postFormData, putFormData } from '@/lib/api-client';
 
@@ -93,7 +96,7 @@ export default function CommunityForm({
 
     const payload = new FormData();
     payload.append('name', name.trim());
-    payload.append('description', description);
+    payload.append('description', description.trim());
     if (imageFile) {
       payload.append('image', imageFile);
     }
@@ -134,16 +137,10 @@ export default function CommunityForm({
       </div>
 
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='community-name'
-        >
-          Name
-        </label>
-        <input
+        <Label htmlFor='community-name'>Name</Label>
+        <Input
           id='community-name'
           type='text'
-          className='w-full rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
           placeholder='Community name'
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -151,16 +148,10 @@ export default function CommunityForm({
       </div>
 
       <div className='space-y-2'>
-        <label
-          className='text-sm font-medium text-foreground'
-          htmlFor='community-description'
-        >
-          Description
-        </label>
-        <textarea
+        <Label htmlFor='community-description'>Description</Label>
+        <Textarea
           id='community-description'
           rows={4}
-          className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
           placeholder='Add a short explanation about this community'
           value={description}
           onChange={(event) => setDescription(event.target.value)}
