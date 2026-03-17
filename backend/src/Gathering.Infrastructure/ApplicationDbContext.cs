@@ -1,4 +1,5 @@
-﻿using Gathering.Domain.Abstractions;
+﻿using Gathering.Application.Abstractions;
+using Gathering.Domain.Abstractions;
 using Gathering.Domain.Communities;
 using Gathering.Domain.Sessions;
 using Gathering.SharedKernel;
@@ -9,6 +10,7 @@ namespace Gathering.Infrastructure;
 public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
     private readonly IDateTimeProvider? _dateTimeProvider;
+    private readonly IDomainEventDispatcher? _domainEventDispatcher;
 
     public DbSet<Community> Communities { get; set; }
 
@@ -16,9 +18,14 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
     public DbSet<SessionResource> SessionResources { get; set; }
 
-    public ApplicationDbContext(DbContextOptions options, IDateTimeProvider? dateTimeProvider = null) : base(options)
+    public ApplicationDbContext(
+        DbContextOptions options,
+        IDateTimeProvider? dateTimeProvider = null,
+        IDomainEventDispatcher? domainEventDispatcher = null)
+        : base(options)
     {
         _dateTimeProvider = dateTimeProvider;
+        _domainEventDispatcher = domainEventDispatcher;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,10 +39,40 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
         return base.SaveChanges();
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         ApplyAuditInfo();
-        return base.SaveChangesAsync(cancellationToken);
+
+        var domainEvents = CollectDomainEvents();
+
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        if (_domainEventDispatcher is not null && domainEvents.Count > 0)
+        {
+            await _domainEventDispatcher.DispatchAsync(domainEvents, cancellationToken);
+        }
+
+        return result;
+    }
+
+    private List<IDomainEvent> CollectDomainEvents()
+    {
+        var entities = ChangeTracker
+            .Entries<Entity>()
+            .Where(e => e.Entity.DomainEvents.Count > 0)
+            .Select(e => e.Entity)
+            .ToList();
+
+        var domainEvents = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
+
+        foreach (var entity in entities)
+        {
+            entity.ClearDomainEvents();
+        }
+
+        return domainEvents;
     }
 
     private void ApplyAuditInfo()

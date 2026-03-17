@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Session, SessionState, Community } from '@/lib/types';
+import { Session, SessionStatus, Community } from '@/lib/types';
 import {
   createSessionWithFormData,
   updateSessionWithFormData,
@@ -51,12 +51,12 @@ export default function SessionForm({
   );
   const [speaker, setSpeaker] = useState(initialData?.speaker ?? '');
   const [schedule, setSchedule] = useState(
-    initialData?.schedule
-      ? new Date(initialData.schedule).toISOString().slice(0, 16)
+    initialData?.scheduledAt
+      ? new Date(initialData.scheduledAt).toISOString().slice(0, 16)
       : '',
   );
-  const [state, setState] = useState<SessionState>(
-    initialData?.state ?? SessionState.Scheduled,
+  const [status, setStatus] = useState<SessionStatus>(
+    initialData?.status ?? SessionStatus.Scheduled,
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initialData?.image ?? null);
@@ -129,9 +129,9 @@ export default function SessionForm({
       formData.append('title', title);
       formData.append('description', description);
       formData.append('speaker', speaker);
-      formData.append('schedule', new Date(schedule).toISOString());
+      formData.append('scheduledAt', new Date(schedule).toISOString());
       if (mode === 'edit') {
-        formData.append('state', state.toString());
+        formData.append('status', status.toString());
       }
       if (imageFile) {
         formData.append('image', imageFile);
@@ -238,12 +238,12 @@ export default function SessionForm({
           <Label htmlFor='session-state'>Status</Label>
           <Select
             id='session-state'
-            value={state}
-            onChange={(e) => setState(Number(e.target.value) as SessionState)}
+            value={status}
+            onChange={(e) => setStatus(Number(e.target.value) as SessionStatus)}
           >
-            <option value={SessionState.Scheduled}>Scheduled</option>
-            <option value={SessionState.Completed}>Completed</option>
-            <option value={SessionState.Canceled}>Canceled</option>
+            <option value={SessionStatus.Scheduled}>Scheduled</option>
+            <option value={SessionStatus.Completed}>Completed</option>
+            <option value={SessionStatus.Canceled}>Canceled</option>
           </Select>
         </div>
       )}

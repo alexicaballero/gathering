@@ -9,4 +9,11 @@
     <Project Path="src/Gathering.Domain/Gathering.Domain.csproj" />
     <Project Path="src/Gathering.SharedKernel/Gathering.SharedKernel.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Gathering.SharedKernel.Tests/Gathering.SharedKernel.Tests.csproj" />
+    <Project Path="tests/Gathering.Domain.Tests/Gathering.Domain.Tests.csproj" />
+    <Project Path="tests/Gathering.Application.Tests/Gathering.Application.Tests.csproj" />
+    <Project Path="tests/Gathering.Infrastructure.Tests/Gathering.Infrastructure.Tests.csproj" />
+    <Project Path="tests/Gathering.Api.Tests/Gathering.Api.Tests.csproj" />
+  </Folder>
 </Solution>

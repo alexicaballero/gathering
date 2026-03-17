@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Gathering.Infrastructure" />
+    <InternalsVisibleTo Include="Gathering.Domain.Tests" />
+    <InternalsVisibleTo Include="Gathering.Application.Tests" />
   </ItemGroup>
 
   <ItemGroup>

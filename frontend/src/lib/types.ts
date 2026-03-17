@@ -1,4 +1,4 @@
-export enum SessionState {
+export enum SessionStatus {
   Scheduled = 0,
   Completed = 1,
   Canceled = 2,
@@ -15,8 +15,8 @@ export interface SessionResponse {
   title: string;
   description: string;
   speaker: string;
-  schedule: string;
-  state: string;
+  scheduledAt: string;
+  status: string;
 }
 
 export interface Community {
@@ -34,8 +34,8 @@ export interface Session {
   description: string;
   image: string | null;
   speaker: string;
-  schedule: string;
-  state: SessionState;
+  scheduledAt: string;
+  status: SessionStatus;
 }
 
 export interface SessionResource {

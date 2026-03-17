@@ -2,6 +2,7 @@
 using Gathering.Domain.Abstractions;
 using Gathering.Domain.Communities;
 using Gathering.Domain.Sessions;
+using Gathering.Infrastructure.DomainEvents;
 using Gathering.Infrastructure.Repositories;
 using Gathering.Infrastructure.Storage;
 using Gathering.Infrastructure.Time;
@@ -34,6 +35,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<ISessionRepository, SessionRepository>();
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         // Azure Blob Storage
         var azureStorageConnectionString = configuration.GetSection("AzureStorage:ConnectionString").Value
