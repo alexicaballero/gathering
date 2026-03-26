@@ -21,7 +21,9 @@ interface SessionCardProps {
 export default function SessionCard({ session }: SessionCardProps) {
   const title = session.title;
   const initial = title.charAt(0).toUpperCase();
-  const scheduleDate = session.scheduledAt ? new Date(session.scheduledAt) : null;
+  const scheduleDate = session.scheduledAt
+    ? new Date(session.scheduledAt)
+    : null;
   const isValidDate = scheduleDate && !isNaN(scheduleDate.getTime());
   const formattedDate = isValidDate
     ? new Intl.DateTimeFormat('en-US', {

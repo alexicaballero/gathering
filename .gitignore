@@ -17,3 +17,14 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# .NET build output
+backend/**/bin/
+backend/**/obj/
+backend/publish/
+backend/build_output.txt
+
+# .NET user files
+*.user
+*.suo
+.vs/

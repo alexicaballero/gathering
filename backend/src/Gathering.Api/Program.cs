@@ -42,6 +42,8 @@ var app = builder.Build();
 // Global exception handling
 app.UseExceptionHandler();
 
+app.UseHttpsRedirection();
+
 // Enable CORS
 app.UseCors("AllowGatheringFrontend");
 
@@ -51,18 +53,14 @@ if (app.Environment.IsDevelopment())
     await SeedDatabaseAsync(app);
 }
 
-if (app.Environment.IsDevelopment())
+// Configure OpenAPI documentation
+app.MapOpenApi();
+
+app.UseSwaggerUI(options =>
 {
-    app.MapOpenApi();
-
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint($"/openapi/v{API_VERSION}.json", $"Gathering API v{API_VERSION}");
-        options.RoutePrefix = string.Empty; // Serve at root
-    });
-}
-
-app.UseHttpsRedirection();
+    options.SwaggerEndpoint($"/openapi/v{API_VERSION}.json", $"Gathering API v{API_VERSION}");
+    options.RoutePrefix = string.Empty; // Serve at root
+});
 
 ApiVersionSet apiVersionSet = app.NewApiVersionSet()
   .HasApiVersion(new ApiVersion(1))
